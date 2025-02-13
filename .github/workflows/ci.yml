@@ -1,4 +1,4 @@
-name: hairlor-fe CI
+name: hailor-fe CI
 
 on:
   - pull_request
@@ -6,6 +6,8 @@ on:
 jobs:
   cache-and-install:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Checkout
@@ -21,3 +23,26 @@ jobs:
 
       - name: Build Project
         run: yarn build
+
+      - name: Deploy to Netlify for testing
+        uses: nwtgck/actions-netlify@v3.0
+        with:
+          publish-dir: './dist'
+          production-branch: ${{ github.head_ref }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "🚀 Deploy from GitHub Actions for PR #${{ github.event.number }}"
+          enable-pull-request-comment: false
+          enable-commit-comment: false
+          overwrites-pull-request-comment: false
+          alias: deploy-preview-${{ github.event.number }}
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+
+      - name: Add deploy comment
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          message: |
+              🚀 Deploy on https://deploy-preview-${{ github.event.number }}--hailor.netlify.app
+          pr-number: ${{ github.event.number }}

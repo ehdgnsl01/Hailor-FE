@@ -13,14 +13,24 @@
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: white;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    min-width: 3.2rem;
+    min-height: 100vh;
+    background-color: #F5F5F5;
 }
 
 html {
-  font-size: 62.5%; /* 10px === 1rem */
+    font-size: 62.5%; /* 10px === 1rem */
+    -webkit-text-size-adjust: none; /*Chrome, Safari, newer versions of Opera*/
+    -moz-text-size-adjust: none; /*Firefox*/
+    -ms-text-size-adjust: none;  /*Ie*/
+}
+
+/* 데스크탑/태블릿 환경 스타일 (768px, 500px) */
+@media (max-width: 7618px) {
+    html {
+        font-size: 58%;
+    }
 }

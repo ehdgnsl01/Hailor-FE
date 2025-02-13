@@ -1,26 +1,21 @@
 import styled from 'styled-components'
 
 const HeaderLayout = styled.header`
-    position: fixed;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
     width: 100%;
     z-index: 1000;
-    background-color: white;
 `
 
 const HeaderContent = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 4px 0; /* 텍스트 여백 */
+    padding: 0.4rem 0; /* 텍스트 여백 */
 `
 
 const GradientText = styled.span`
     font-weight: 500; /* 두꺼운 글씨 */
     font-style: oblique;
-    font-size: 24px;
+    font-size: 2.4rem;
     background: linear-gradient(45deg, #292959, #5e58bf);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -30,9 +25,9 @@ const GradientText = styled.span`
 
 const HeaderDivider = styled.div`
     width: 100%;
-    height: 1px;
+    height: 0.1rem;
     background: #d9d9d9;
-    opacity:60%;
+    opacity: 60%;
 `
 
 function Header() {

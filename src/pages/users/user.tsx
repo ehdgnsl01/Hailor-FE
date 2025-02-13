@@ -1,20 +1,21 @@
 import { Outlet } from 'react-router-dom'
-import Header from '../components/header'
-import Navigation from '../components/navigation'
+import Header from '../../components/header.tsx'
+import Navigation from '../../components/navigation.tsx'
 import styled from 'styled-components'
 
 const MainLayout = styled.div`
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-rows: auto 1fr 8.1rem; /* 6.5 + 0.8*2rem*/
     width: 100%;
+    height: 100%;
+    overflow-y: hidden;
     /* 헤더, 컨텐츠, 네비게이션 영역: 상단, 중간, 하단 */
 `
 
 const ContentLayout = styled.div`
     width: 100%;
-    min-height: 100vh;
-    margin-top: 3.5rem; /* Header 높이만큼 패딩 추가 */
-    margin-bottom: 5rem; /* Footer 높이만큼 패딩 추가 */
+    height: 100%;
+    overflow-y: scroll;
 `
 
 function User() {

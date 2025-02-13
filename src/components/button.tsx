@@ -31,7 +31,7 @@ function Button({ text, type, onClick }: Props) {
     )
 }
 
-const ButtonLayout = styled.div<{ color: string, background: string, stroke: string }>`
+const ButtonLayout = styled.div<{ color: string; background: string; stroke: string }>`
     display: flex;
     align-items: center;
     justify-content: center;

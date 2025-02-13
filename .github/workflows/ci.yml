@@ -22,7 +22,7 @@ jobs:
         run: yarn install
 
       - name: Build Project
-        run: yarn build
+        run: yarn build && echo '/* /index.html 200' | cat > dist/_redirects
 
       - name: Deploy to Netlify for testing
         uses: nwtgck/actions-netlify@v3.0

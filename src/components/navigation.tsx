@@ -29,7 +29,7 @@ const NavigationContainer = styled.nav`
     border-top: 0.1rem solid #d9d9d9;
     border-radius: 1.2rem 1.2rem 0 0;
     display: grid;
-    grid-template-columns: 1.6rem repeat(${pages.length - 1}, 1fr 5.6rem) 1fr 1.6rem;
+    grid-template-columns: 1.6rem repeat(${pages.length - 1}, 1fr 1fr) 1fr 1.6rem;
     justify-content: space-around;
     align-items: center;
     z-index: 1000;

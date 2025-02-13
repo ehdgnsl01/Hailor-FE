@@ -17,13 +17,21 @@ import Payment from './pages/payment/payment.tsx'
 import PaymentCancel from './pages/payment/paymentCancel.tsx'
 import PaymentFailure from './pages/payment/paymentFailure.tsx'
 import PaymentSuccess from './pages/payment/paymentSuccess.tsx'
+import { useEffect } from 'react'
 
 const Layout = styled.div`
     width: 100vw;
-    height: 100vh;
+    height: calc(var(--vh, 1vh) * 100);
 `
 
 function App() {
+    function setScreenSize() {
+        const vh = window.innerHeight * 0.01
+        document.documentElement.style.setProperty('--vh', `${vh}px`)
+    }
+    useEffect(() => {
+        setScreenSize()
+    })
     return (
         <Layout>
             <BrowserRouter>

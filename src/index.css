@@ -10,6 +10,8 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+
+    --vh: 100%;
 }
 
 body {
@@ -17,7 +19,6 @@ body {
     padding: 0;
     display: flex;
     min-width: 3.2rem;
-    min-height: 100vh;
     background-color: #F5F5F5;
 }
 
@@ -26,11 +27,16 @@ html {
     -webkit-text-size-adjust: none; /*Chrome, Safari, newer versions of Opera*/
     -moz-text-size-adjust: none; /*Firefox*/
     -ms-text-size-adjust: none;  /*Ie*/
-}
-
-/* 데스크탑/태블릿 환경 스타일 (768px, 500px) */
-@media (max-width: 7618px) {
-    html {
+    /* 데스크탑/태블릿 환경 스타일 (768px, 500px) */
+    @media (max-width: 981px) {
+        font-size: 60%;
+    }
+    @media (max-width: 768px) {
         font-size: 58%;
     }
+    @media (max-width: 640px) {
+        font-size: 56%;
+    }
 }
+
+

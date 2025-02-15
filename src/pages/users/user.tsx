@@ -4,18 +4,17 @@ import Navigation from '../../components/navigation.tsx'
 import styled from 'styled-components'
 
 const MainLayout = styled.div`
-    display: grid;
-    grid-template-rows: auto 1fr 8.1rem; /* 6.5 + 0.8*2rem*/
-    width: 100%;
-    height: 100%;
-    overflow-y: hidden;
-    /* 헤더, 컨텐츠, 네비게이션 영역: 상단, 중간, 하단 */
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+    min-height: 100%;
 `
 
 const ContentLayout = styled.div`
     width: 100%;
     height: 100%;
     overflow-y: scroll;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0.8rem) + 7.3rem);
 `
 
 function User() {

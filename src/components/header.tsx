@@ -1,8 +1,16 @@
 import styled from 'styled-components'
 
 const HeaderLayout = styled.header`
+    position: sticky;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    top: 0;
     width: 100%;
+    min-height: 5rem;
     z-index: 1000;
+    background-color: #ffffff;
+    border-bottom: 0.1rem solid rgba(217, 217, 217, 0.6);
 `
 
 const HeaderContent = styled.div`
@@ -23,20 +31,12 @@ const GradientText = styled.span`
     color: transparent;
 `
 
-const HeaderDivider = styled.div`
-    width: 100%;
-    height: 0.1rem;
-    background: #d9d9d9;
-    opacity: 60%;
-`
-
 function Header() {
     return (
         <HeaderLayout>
             <HeaderContent>
                 <GradientText>Hailor</GradientText>
             </HeaderContent>
-            <HeaderDivider />
         </HeaderLayout>
     )
 }

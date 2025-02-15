@@ -3,6 +3,7 @@ import styled from 'styled-components'
 const HomeLayout = styled.div`
     width: 100%;
     min-height: inherit;
+    font-size: 1.4rem;
 `
 
 function Home() {

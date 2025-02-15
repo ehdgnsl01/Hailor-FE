@@ -23,6 +23,8 @@ const icons: Record<Page, string> = {
 }
 
 const NavigationContainer = styled.nav`
+    position: fixed;
+    bottom: 0;
     width: 100%;
     height: 6.5rem;
     background-color: #ffffff;
@@ -33,7 +35,7 @@ const NavigationContainer = styled.nav`
     justify-content: space-around;
     align-items: center;
     z-index: 1000;
-    padding: 0.8rem 0;
+    padding: 0.8rem 0 env(safe-area-inset-bottom, 0.8rem) 0;
 `
 
 const NavItem = styled(Link) <{ position: number }>`

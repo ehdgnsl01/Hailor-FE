@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 import { Link, useLocation } from 'react-router-dom'
 import * as React from 'react'
+import { pages } from './navigationConstants'
 
-export const pages = ['홈', '검색', '예약', '채팅', '마이'] as const
 export type Page = (typeof pages)[number]
 
 const routes: Record<Page, string> = {
@@ -36,7 +36,7 @@ const NavigationContainer = styled.nav`
     padding: 0.8rem 0;
 `
 
-const NavItem = styled(Link)<{ position: number }>`
+const NavItem = styled(Link) <{ position: number }>`
     text-decoration: none;
     background: none;
     border: none;
@@ -50,8 +50,8 @@ const NavItem = styled(Link)<{ position: number }>`
 `
 
 const Icon = styled.div<{ src: string; active: boolean }>`
-    width: 1.5rem; /* 24px = 1.5rem */
-    height: 1.5rem;
+    width: 2.5rem; /* 24px = 1.5rem */
+    height: 2.5rem;
     background-color: ${({ active }) => (active ? '#35376E' : 'rgba(41, 41, 41, 0.6)')};
     mask: url(${props => props.src}) center / contain no-repeat;
     -webkit-mask: url(${props => props.src}) center / contain no-repeat;

@@ -21,7 +21,7 @@ function RadioButton({ data, selected, onClick }: Props) {
     )
 }
 
-const RadioButtonLayout = styled.div`
+const RadioButtonLayout = styled.div<{ columnGap?: string }>`
     display: flex;
     align-items: center;
     justify-content: center;

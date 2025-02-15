@@ -22,7 +22,7 @@ function User() {
     return (
         <MainLayout>
             <Header />
-            <ContentLayout>
+            <ContentLayout id="content-layout">
                 {/* 각 페이지 컴포넌트가 이 Outlet에 렌더링 됨 */}
                 <Outlet />
             </ContentLayout>

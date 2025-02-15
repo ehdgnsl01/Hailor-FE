@@ -14,7 +14,7 @@ const HeaderContent = styled.div`
 
 const GradientText = styled.span`
     font-weight: 500; /* 두꺼운 글씨 */
-    font-style: oblique;
+    font-style: italic;
     font-size: 2.4rem;
     background: linear-gradient(45deg, #292959, #5e58bf);
     -webkit-background-clip: text;

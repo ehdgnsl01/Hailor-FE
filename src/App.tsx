@@ -41,15 +41,16 @@ function App() {
                     <Route path="register" element={<Register />} />
                     <Route path="user" element={<User />}>
                         <Route path="" element={<Home />} />
-                        <Route path="search" element={<Search />} />
+                        <Route path="search" element={<Search />}>
+                            <Route path="payment" element={<Payment />}>
+                                <Route path="cancel" element={<PaymentCancel />} />
+                                <Route path="failure" element={<PaymentFailure />} />
+                                <Route path="success" element={<PaymentSuccess />} />
+                            </Route>
+                        </Route>
                         <Route path="reservation" element={<Reservation />} />
                         <Route path="chat" element={<Chat />} />
                         <Route path="mypage" element={<MyPage />} />
-                    </Route>
-                    <Route path="payment" element={<Payment />}>
-                        <Route path="cancel" element={<PaymentCancel />} />
-                        <Route path="failure" element={<PaymentFailure />} />
-                        <Route path="success" element={<PaymentSuccess />} />
                     </Route>
                     <Route path="admin" element={<Admin />} />
                 </Routes>

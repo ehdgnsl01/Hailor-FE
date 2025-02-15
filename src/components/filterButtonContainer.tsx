@@ -78,4 +78,9 @@ const Container = styled.div`
     gap: 1rem;
     overflow-x: auto;
     white-space: nowrap;
+    scrollbar-width: none;
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
 `

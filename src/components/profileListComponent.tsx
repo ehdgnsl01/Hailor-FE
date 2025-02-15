@@ -12,7 +12,7 @@ const ProfileListComponent: React.FC<ProfileListComponentProps> = ({ designers }
         <ListContainer>
             {designers.map(designer => (
                 ///payment/${designer.id}
-                <StyledLink key={designer.id} to={`/payment`}>
+                <StyledLink key={designer.id} to={`payment`}>
                     <ProfileCard key={designer.id}>
                         <ProfileInfo>
                             <TopBox>

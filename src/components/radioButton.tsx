@@ -30,8 +30,8 @@ const RadioButtonLayout = styled.div<{ columnGap?: string }>`
     background-color: #ffffff;
     color: #000000;
     width: fit-content;
-    column-gap: 1.6rem;
-    padding: 1.6rem;
+    column-gap: 4.7rem;
+    padding: 1.6rem 3.2rem;
 `
 
 const ButtonItem = styled.div<{ selected: boolean; index: number; total: number }>`
@@ -52,10 +52,10 @@ const ButtonItem = styled.div<{ selected: boolean; index: number; total: number 
         height: 100%;
         background-color: #35376e;
         border-radius: 50rem;
-        transform: translate(-50%, -50%) scale(${({ selected }) => (selected ? 1 : 0)});
+        transform: translate3d(-50%, -50%, 0) scale(${({ selected }) => (selected ? 1 : 0)});
         transition: transform 0.4s ease-in-out;
-        z-index: -1;
         padding: 1.2rem 1.6rem;
+        z-index: -1;
     }
 
     ${({ selected, index, total }) =>

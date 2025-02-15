@@ -65,7 +65,7 @@ const Icon = styled.div<{ src: string; active: boolean }>`
 `
 
 const Text = styled.span<{ active: boolean }>`
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: ${props => (props.active ? '#35376E' : 'rgba(41, 41, 41, 0.6)')};
 `
 

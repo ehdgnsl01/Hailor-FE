@@ -22,7 +22,10 @@ jobs:
         run: yarn install
 
       - name: Build Project
-        run: yarn build && echo '/* /index.html 200' | cat > dist/_redirects
+        run: |
+          yarn build 
+          echo '/* /index.html 200' | cat > dist/_redirects
+          echo '/*\n  Cross-Origin-Opener-Policy: unsafe-none' | cat > dist/_headers
 
       - name: Deploy to Netlify for testing
         uses: nwtgck/actions-netlify@v3.0

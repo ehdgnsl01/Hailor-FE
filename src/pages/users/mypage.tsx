@@ -1,5 +1,8 @@
 import styled from 'styled-components'
 import GoogleOauthLogin from '../../components/googleOauthLogin.tsx'
+import { userStore } from '../../store/user.ts'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const MyPageLayout = styled.div`
     display: flex;
@@ -31,15 +34,25 @@ const Text = styled.span`
 `
 
 function MyPage() {
-    // TODO: check user login state
+    const { getUser } = userStore()
+    const navigate = useNavigate()
+    const user = getUser()
+    useEffect(() => {
+        if (user.role && user.role !== 'USER') {
+            navigate('/admin')
+        }
+    }, [user])
+
     return (
         <MyPageLayout>
-            <GoogleOauthLogin />
+            {!user.name && <GoogleOauthLogin />}
             {/*TODO: get user info*/}
-            <InfoContainer>
-                <Profile src={'https://placehold.co/32x32'} />
-                <Text>뽀야미</Text>
-            </InfoContainer>
+            {user.name && (
+                <InfoContainer>
+                    <Profile src={'/윈터 사진.webp'} />
+                    <Text>{user.name}</Text>
+                </InfoContainer>
+            )}
         </MyPageLayout>
     )
 }

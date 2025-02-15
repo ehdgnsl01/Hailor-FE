@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { GoogleLoginIcon } from '../../components/icon'
 import styled from 'styled-components'
 import { reservationData } from '../../data/exReservationData'
+//import { emptyReservationData } from '../../data/exReservationData'
 
 function Reservation() {
     const [reservationDate, setReservationDate] = useState<Date | null>(null)
@@ -32,6 +34,15 @@ function Reservation() {
     const days = ['일', '월', '화', '수', '목', '금', '토']
     const dayOfWeek = reservationDate ? days[reservationDate.getDay()] : ''
 
+    // 예약 데이터가 없으면 placeName이 빈 문자열이라 가정
+    if (!placeName) {
+        return (
+            <NoReservationContainer>
+                <NoReservationText>예약하신 일정이 없습니다.</NoReservationText>
+            </NoReservationContainer>
+        )
+    }
+
     return (
         <PaymentContainer>
             <Image src="https://placehold.co/600x600" />
@@ -41,6 +52,8 @@ function Reservation() {
                     <InfoBox>
                         <InfoItem>
                             <CountdownText>{countdown ? countdown : '예약하신 일정이 없습니다.'}</CountdownText>
+                        </InfoItem>
+                        <InfoItem>
                             <TitleText>{placeName}</TitleText>
                         </InfoItem>
                         <InfoItem>
@@ -52,24 +65,26 @@ function Reservation() {
                     {/* 박스 2: 예약일, 요일, 예약시간, 상담 방식 */}
                     <InfoBox>
                         <InfoItem>
-                            <strong>예약일:</strong> {formattedReservationDate} ({dayOfWeek})
+                            <TitleText>{formattedReservationDate}</TitleText>
+                            <SubText>({dayOfWeek})</SubText>
                         </InfoItem>
                         <InfoItem>
-                            <strong>예약시간:</strong> {reservationTime}
-                        </InfoItem>
-                        <InfoItem>
-                            <strong>상담 방식:</strong> {consultationType}
+                            <SubText>{reservationTime}</SubText>
+                            <SubText>·</SubText>
+                            <SubText>{consultationType}</SubText>
                         </InfoItem>
                     </InfoBox>
                     {/* 박스 3: 상담 방식이 비대면이면 구글미트 링크 */}
                     {consultationType === '비대면' && googleMeetLink && (
                         <InfoBox>
                             <InfoItem>
-                                <strong>비대면 상담 링크:</strong>{' '}
-                                <GoogleMeetLink href={googleMeetLink} target="_blank" rel="noopener noreferrer">
-                                    구글미트 바로가기
-                                </GoogleMeetLink>
+                                <TitleText>비대면 상담 링크 </TitleText>
+                                <SubText>구글 미트</SubText>
                             </InfoItem>
+                            <GoogleMeetLink href={googleMeetLink} target="_blank" rel="noopener noreferrer">
+                                <GoogleLoginIcon width={'3.2rem'} height={'3.2rem'} fill={'none'} />
+                                <GoogleMeetText>비대면 링크 접속하기</GoogleMeetText>
+                            </GoogleMeetLink>
                         </InfoBox>
                     )}
                 </InfoBoxesContainer>
@@ -96,6 +111,7 @@ const FormContainer = styled.form`
     gap: 2rem;
     width: 100%;
     padding: 1.6rem 0;
+    margin-bottom: 10rem;
 `
 
 const Image = styled.img`
@@ -105,10 +121,12 @@ const Image = styled.img`
 `
 
 const CountdownText = styled.div`
-    font-size: 2rem;
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #35376e;
-    margin: 1rem 0;
+    color: #ffffff;
+    background-color: #35376e;
+    padding: 0 1rem;
+    border-radius: 5rem;
 `
 
 const InfoBoxesContainer = styled.div`
@@ -133,22 +151,55 @@ const InfoBox = styled.div`
 const InfoItem = styled.div`
     display: flex;
     gap: 1rem;
+    justify-content: flex-start;
     align-items: baseline;
 `
 
 const TitleText = styled.div`
     font-size: 2.4rem;
     font-weight: bold;
+    padding-bottom: 0.5rem;
 `
 
 const SubText = styled.div`
     font-size: 1.5rem;
     color: rgba(41, 41, 41, 0.6);
-    margin-right: 0.5rem;
+    margin-right: 0.2rem;
 `
 
 const GoogleMeetLink = styled.a`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.2rem 1.2rem;
+    background-color: #35376e;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #292959;
+    }
+`
+
+const GoogleMeetText = styled.div`
+    font-size: 1.6rem;
+    border-left: 1px solid #fff;
+    padding: 0 1rem;
+`
+const NoReservationContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 5rem;
+`
+
+const NoReservationText = styled.div`
+    font-size: 2rem;
     color: #35376e;
-    text-decoration: underline;
     font-weight: bold;
 `

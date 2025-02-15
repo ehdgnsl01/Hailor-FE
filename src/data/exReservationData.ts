@@ -1,3 +1,5 @@
+// src/data/exReservationData.ts
+
 export interface ReservationData {
     reservationDate: Date
     placeName: string
@@ -17,4 +19,15 @@ export const reservationData: ReservationData = {
     reservationTime: '14:00',
     consultationType: '비대면',
     googleMeetLink: 'https://meet.google.com/abc-defg-hij',
+}
+
+// 예약 정보가 없는 경우를 나타내는 빈 예약 데이터
+export const emptyReservationData: ReservationData = {
+    reservationDate: new Date(), // 예약 정보가 없으므로 현재 날짜를 기본값으로 사용 (또는 new Date(0) 등으로 설정 가능)
+    placeName: '',
+    address: '',
+    designerName: '',
+    reservationTime: '',
+    consultationType: '대면', // 기본값 (필요에 따라 변경 가능)
+    // googleMeetLink는 없으므로 생략
 }

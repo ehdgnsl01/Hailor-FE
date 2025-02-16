@@ -4,19 +4,18 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import styled from 'styled-components'
-
 import User from './pages/users/user.tsx'
 import Admin from './pages/admin/admin.tsx'
 import Home from './pages/users/home.tsx'
 import Search from './pages/users/search.tsx'
 import Reservation from './pages/users/reservation.tsx'
-import Chat from './pages/users/chat.tsx'
 import MyPage from './pages/users/mypage.tsx'
 import Main from './pages/main.tsx'
 import Payment from './pages/payment/payment.tsx'
 import PaymentCancel from './pages/payment/paymentCancel.tsx'
 import PaymentFailure from './pages/payment/paymentFailure.tsx'
 import PaymentSuccess from './pages/payment/paymentSuccess.tsx'
+import NotFound from './pages/notFound.tsx'
 
 const Layout = styled.div`
     width: 100vw;
@@ -62,10 +61,10 @@ function App() {
                                 </Route>
                             </Route>
                             <Route path="reservation" element={<Reservation />} />
-                            <Route path="chat" element={<Chat />} />
                             <Route path="mypage" element={<MyPage />} />
                         </Route>
                         <Route path="admin" element={<Admin />} />
+                        <Route path="*" element={<NotFound />} />
                     </Routes>
                 </BrowserRouter>
             </QueryClientProvider>

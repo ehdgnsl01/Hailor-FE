@@ -92,3 +92,21 @@ export function FailureIcon({ width, height }: IconProps) {
         </svg>
     )
 }
+
+export const DangerIcon: React.FC<IconProps> = ({ width = '5rem', height = '5rem' }) => (
+    <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width={width}
+        height={height}
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="rgba(0,0,0,0.4)"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+    >
+        <rect x="3" y="3" width="18" height="18" rx="4" ry="4" />
+        <line x1="12" y1="8" x2="12" y2="14" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+)

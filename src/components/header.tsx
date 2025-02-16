@@ -8,7 +8,7 @@ const HeaderLayout = styled.header`
     top: 0;
     width: 100%;
     min-height: 5rem;
-    z-index: 10;
+    z-index: 9999;
     background-color: #ffffff;
     border-bottom: 0.1rem solid rgba(217, 217, 217, 0.6);
 `

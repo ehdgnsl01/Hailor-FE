@@ -11,7 +11,7 @@ import DepositModal from '../../components/depositModal.tsx'
 import SelectButton from '../../components/selectButton.tsx'
 
 const PaymentContainer = styled.div`
-    position: absolute;
+    position: fixed;
     top: 5rem;
     left: 0;
     background-color: #ffffff;
@@ -110,6 +110,17 @@ function Payment() {
         window.scrollTo(0, 0)
     }, [])
 
+    useEffect(() => {
+        // 현재 body의 overflow 값을 저장합니다.
+        const originalOverflow = document.body.style.overflow
+        // Payment가 나타나면 스크롤을 비활성화합니다.
+        document.body.style.overflow = 'hidden'
+        return () => {
+            // Payment가 사라지면 원래 상태로 복원합니다.
+            document.body.style.overflow = originalOverflow
+        }
+    }, [])
+
     const times: ITime[] = useMemo(() => {
         const result = []
         let current = 10 * 60
@@ -128,7 +139,7 @@ function Payment() {
 
     const back = () => navigate(-1)
     return (
-        <div>
+        <>
             <PaymentContainer>
                 <TitleContainer>
                     <BackButton onClick={back}>
@@ -206,7 +217,7 @@ function Payment() {
                 }}
             />
             {showDeposit && <DepositModal price={23000} onClose={() => navigate('cancel')} />}
-        </div>
+        </>
     )
 }
 

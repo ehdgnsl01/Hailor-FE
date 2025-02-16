@@ -41,7 +41,7 @@ function MyPage() {
         if (user.role && user.role !== 'USER') {
             navigate('/admin')
         }
-    }, [user])
+    }, [user, navigate])
 
     return (
         <MyPageLayout>

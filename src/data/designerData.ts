@@ -23,5 +23,27 @@ export const designers: Designer[] = [
         introduction: '트렌디한 스타일을 제안합니다.',
         consultationType: '화상, 대면 둘다 가능',
     },
+    {
+        id: 3,
+        name: '장원영',
+        region: '서울전체',
+        hairShopAddress: '서울 강남구 역삼동 111-22',
+        profileImage: '/장원영 사진.jpg',
+        specialties: ['컷', '펌'],
+        consultingFee: 55000,
+        introduction: '세련되고 감각적인 스타일을 선보입니다.',
+        consultationType: '대면 가능',
+    },
+    {
+        id: 4,
+        name: '유나',
+        region: '강남/청담/압구정',
+        hairShopAddress: '서울 강남구 청담동 55-66',
+        profileImage: '/유나 사진.jpg',
+        specialties: ['염색', '펌'],
+        consultingFee: 65000,
+        introduction: '최신 트렌드를 반영한 스타일을 제안합니다.',
+        consultationType: '화상, 대면 둘다 가능',
+    },
     // ... 추가 디자이너 데이터를 여기에 추가
 ]

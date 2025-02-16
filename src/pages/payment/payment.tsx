@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
@@ -105,6 +105,10 @@ function Payment() {
     const [time, setTime] = useState<string>('')
     const [showDeposit, setShowDeposit] = useState<boolean>(false)
     const [payType, setPayType] = useState<number>(0)
+
+    useEffect(() => {
+        window.scrollTo(0, 0)
+    }, [])
 
     const times: ITime[] = useMemo(() => {
         const result = []

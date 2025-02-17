@@ -1,20 +1,44 @@
 import { useState, useEffect } from 'react'
-import { GoogleLoginIcon } from '../../components/icon'
 import styled from 'styled-components'
-import { reservationData } from '../../data/exReservationData'
-//import { emptyReservationData } from '../../data/exReservationData'
 
-function Reservation() {
-    const [reservationDate, setReservationDate] = useState<Date | null>(null)
+import { GoogleLoginIcon } from '../../components/icon'
+import { userStore } from '../../store/user.ts'
+import NeedLogin from '../../components/needLogin.tsx'
+import { googleClientId, VITE_SERVER_URL } from '../../config'
+import { IReservationFull } from '../../types/reservation.ts'
+import { GoogleOAuthProvider } from '@react-oauth/google'
+import MakeMeet from '../../components/makeMeet.tsx'
 
+function ReservationComponent() {
+    const [reservations, setReservations] = useState<IReservationFull[] | null>(null)
+    const [refetch, setRefetch] = useState<boolean>(false)
+    const { getToken } = userStore()
+    const token = getToken()
     useEffect(() => {
-        setReservationDate(reservationData.reservationDate)
-    }, [])
+        fetch(`${VITE_SERVER_URL}/api/v1/reservation?size=20`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                const res = data as {
+                    reservations: IReservationFull[]
+                }
+                console.log(res)
+                const result = res.reservations
+                    .filter(reservation => reservation.status === 'RESERVED' || reservation.status === 'CONFIRMED')
+                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                setReservations(result)
+            })
+    }, [token, refetch])
 
     // 오늘과 예약 날짜의 차이를 계산하는 함수
-    const getCountdownString = (date: Date): string => {
+    const getCountdownString = (date: string): string => {
         const now = new Date()
-        const diffTime = date.getTime() - now.getTime()
+        const diffTime = new Date(date).getTime() - now.getTime()
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
         if (diffDays > 0) {
             return `D-${diffDays}`
@@ -25,17 +49,18 @@ function Reservation() {
         }
     }
 
-    const countdown = reservationDate ? getCountdownString(reservationDate) : ''
+    const convertDate = (date: string): string => {
+        const temp = date.split('-')
+        return `${temp[1].charAt(0) === '0' ? temp[1].charAt(1) : temp[1]}월 ${temp[2]}일`
+    }
 
-    // 예약 상세 정보는 reservationData에서 가져옴
-    const { placeName, address, designerName, reservationTime, consultationType, googleMeetLink } = reservationData
-
-    const formattedReservationDate = reservationDate ? `${reservationDate.getMonth() + 1}월 ${reservationDate.getDate()}일` : ''
-    const days = ['일', '월', '화', '수', '목', '금', '토']
-    const dayOfWeek = reservationDate ? days[reservationDate.getDay()] : ''
+    const getDay = (date: string): string => {
+        const formatting = ['일', '월', '화', '수', '목', '금', '토']
+        return formatting[new Date(date).getDay()]
+    }
 
     // 예약 데이터가 없으면 placeName이 빈 문자열이라 가정
-    if (!placeName) {
+    if (!reservations) {
         return (
             <NoReservationContainer>
                 <NoReservationText>예약하신 일정이 없습니다.</NoReservationText>
@@ -45,52 +70,67 @@ function Reservation() {
 
     return (
         <PaymentContainer>
-            <Image src="https://placehold.co/600x600" />
+            <Image src={reservations[0].designer.profileImageURL} />
             <FormContainer>
                 <InfoBoxesContainer>
                     {/* 박스 1: 장소, 주소, 디자이너 */}
                     <InfoBox>
                         <InfoItem>
-                            <CountdownText>{countdown ? countdown : '예약하신 일정이 없습니다.'}</CountdownText>
+                            <TitleText>{reservations[0].designer.name}</TitleText>
+                            <CountdownText>{getCountdownString(reservations[0].date)}</CountdownText>
                         </InfoItem>
                         <InfoItem>
-                            <TitleText>{placeName}</TitleText>
-                        </InfoItem>
-                        <InfoItem>
-                            <SubText>{address}</SubText>
-                            <SubText>·</SubText>
-                            <SubText>{designerName}</SubText>
+                            <SubText>{reservations[0].designer.shopAddress}</SubText>
+                            {/*<SubText>·</SubText>
+                            <SubText>{designerName}</SubText>*/}
                         </InfoItem>
                     </InfoBox>
                     {/* 박스 2: 예약일, 요일, 예약시간, 상담 방식 */}
                     <InfoBox>
                         <InfoItem>
-                            <TitleText>{formattedReservationDate}</TitleText>
-                            <SubText>({dayOfWeek})</SubText>
+                            <TitleText>{convertDate(reservations[0].date)}</TitleText>
+                            <SubText>{getDay(reservations[0].date)}</SubText>
                         </InfoItem>
                         <InfoItem>
-                            <SubText>{reservationTime}</SubText>
+                            <SubText>{`${10 + Math.floor(reservations[0].slot / 2)}:${reservations[0].slot % 2 === 0 ? 0 : 30}`}</SubText>
                             <SubText>·</SubText>
-                            <SubText>{consultationType}</SubText>
+                            <SubText>{reservations[0].meetingType === 'ONLINE' ? '비대면' : '대면'}</SubText>
                         </InfoItem>
                     </InfoBox>
                     {/* 박스 3: 상담 방식이 비대면이면 구글미트 링크 */}
-                    {consultationType === '비대면' && googleMeetLink && (
+                    {reservations[0].meetingType === 'ONLINE' && (
                         <InfoBox>
                             <InfoItem>
-                                <TitleText>비대면 상담 링크 </TitleText>
+                                <TitleText>비대면 링크</TitleText>
                                 <SubText>구글 미트</SubText>
                             </InfoItem>
-                            <GoogleMeetLink href={googleMeetLink} target="_blank" rel="noopener noreferrer">
-                                <GoogleLoginIcon width={'3.2rem'} height={'3.2rem'} fill={'none'} />
-                                <GoogleMeetText>비대면 링크 접속하기</GoogleMeetText>
-                            </GoogleMeetLink>
+                            {reservations[0].googleMeetLink ? (
+                                <GoogleMeetLink href={reservations[0].googleMeetLink} target="_blank" rel="noopener noreferrer">
+                                    <GoogleLoginIcon width={'2.4rem'} height={'2.4rem'} fill={'none'} />
+                                    <GoogleMeetText>비대면 링크 접속하기</GoogleMeetText>
+                                </GoogleMeetLink>
+                            ) : (
+                                <GoogleOAuthProvider clientId={googleClientId}>
+                                    <MakeMeet id={reservations[0].id} onClose={() => setRefetch(!refetch)} pg_token={''} />
+                                </GoogleOAuthProvider>
+                            )}
                         </InfoBox>
                     )}
                 </InfoBoxesContainer>
             </FormContainer>
         </PaymentContainer>
     )
+}
+
+function Reservation() {
+    const { getUser } = userStore()
+    const user = getUser()
+
+    if (!user.name) {
+        return <NeedLogin />
+    }
+
+    return <ReservationComponent />
 }
 
 export default Reservation
@@ -118,6 +158,7 @@ const Image = styled.img`
     width: 100%;
     height: 20rem;
     object-fit: cover;
+    object-position: top;
 `
 
 const CountdownText = styled.div`
@@ -132,7 +173,7 @@ const CountdownText = styled.div`
 const InfoBoxesContainer = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.6rem;
     width: 100%;
     margin-top: 2rem;
     justify-content: center;
@@ -140,12 +181,15 @@ const InfoBoxesContainer = styled.div`
 `
 
 const InfoBox = styled.div`
-    border: 0.1rem solid #ccc;
-    border-radius: 1rem;
-    padding: 2rem 1.5rem;
-    background-color: #f8f8f8;
+    display: flex;
+    flex-direction: column;
+    border: 0.1rem solid rgba(217, 217, 217, 0.6);
+    border-radius: 1.2rem;
+    padding: 2rem 1.6rem;
+    background-color: #ffffff;
     font-size: 1.6rem;
     width: 85%;
+    gap: 1.6rem;
 `
 
 const InfoItem = styled.div`
@@ -157,12 +201,11 @@ const InfoItem = styled.div`
 
 const TitleText = styled.div`
     font-size: 2.4rem;
-    font-weight: bold;
-    padding-bottom: 0.5rem;
+    font-weight: 700;
 `
 
 const SubText = styled.div`
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: rgba(41, 41, 41, 0.6);
     margin-right: 0.2rem;
 `
@@ -173,22 +216,20 @@ const GoogleMeetLink = styled.a`
     align-items: center;
     gap: 1rem;
     padding: 1.2rem 1.2rem;
-    background-color: #35376e;
+    background-color: rgba(55, 55, 110, 1);
+    border: 0.1rem solid rgba(41, 41, 89, 1);
     color: #ffffff;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 700;
     border-radius: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
-
-    &:hover {
-        background-color: #292959;
-    }
 `
 
 const GoogleMeetText = styled.div`
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     border-left: 1px solid #fff;
+    text-decoration: underline;
     padding: 0 1rem;
 `
 const NoReservationContainer = styled.div`
@@ -200,6 +241,6 @@ const NoReservationContainer = styled.div`
 
 const NoReservationText = styled.div`
     font-size: 2rem;
-    color: #35376e;
+    color: rgba(55, 55, 110, 1);
     font-weight: bold;
 `

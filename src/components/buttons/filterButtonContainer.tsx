@@ -1,14 +1,15 @@
 import React from 'react'
 import styled from 'styled-components'
-import Button from '../components/button'
-import { ButtonTypes } from '../types/button'
-import ResetButton from '../components/resetButton'
+import Button from './button.tsx'
+import { ButtonTypes } from '../../types/button.ts'
+import ResetButton from './resetButton.tsx'
+import { IRegion } from '../../types/designer.ts'
 
 export type FilterType = '대면여부' | '위치' | '날짜' | '가격' | null
 
 interface FilterButtonContainerProps {
     faceFilterSelected: string | null
-    locationFilterSelected: string[]
+    locationFilterSelected: IRegion | null
     dateFilterSelected: Date | null
     priceFilterSelected: { min: number; max: number } | null
     onReset: () => void
@@ -25,9 +26,8 @@ const FilterButtonContainer: React.FC<FilterButtonContainerProps> = ({
 }) => {
     // 위치 버튼 텍스트 결정
     const getLocationButtonText = () => {
-        if (locationFilterSelected.length === 0) return '위치'
-        if (locationFilterSelected.length === 1) return locationFilterSelected[0]
-        return `${locationFilterSelected[0]} 외 ${locationFilterSelected.length - 1}곳`
+        if (locationFilterSelected == null) return '위치'
+        return locationFilterSelected.name
     }
 
     // 날짜 버튼 텍스트: 선택된 날짜가 있으면 "12월 24일", 없으면 "날짜"
@@ -52,7 +52,7 @@ const FilterButtonContainer: React.FC<FilterButtonContainerProps> = ({
             />
             <Button
                 text={getLocationButtonText()}
-                type={locationFilterSelected.length > 0 ? ButtonTypes.selected : ButtonTypes.default}
+                type={locationFilterSelected === null ? ButtonTypes.default : ButtonTypes.selected}
                 onClick={() => onOpenFilter('위치')}
             />
             <Button

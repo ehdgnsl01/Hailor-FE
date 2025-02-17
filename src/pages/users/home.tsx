@@ -1,7 +1,7 @@
-import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { reservationData } from '../../data/exReservationData'
 import { designers } from '../../data/designerData'
+import React from 'react'
 
 function Home() {
     const { reservationDate, placeName, consultationType, reservationTime } = reservationData
@@ -27,7 +27,7 @@ function Home() {
             <UpcomingReservationSection>
                 <SectionTitle>다가오는 예약</SectionTitle>
                 <ReservationInfo>
-                    <StyledLink to="/user/reservation">
+                    <StyledLink>
                         <ReservationCard>
                             <TitleLine>{placeName}</TitleLine>
                             <InfoBox>
@@ -45,41 +45,45 @@ function Home() {
                 {/* 인기있는 디자이너 섹션 */}
                 <SectionTitle>인기있는 디자이너</SectionTitle>
                 <HorizontalScrollContainer>
-                    {designers.map(designer => (
-                        <StyledLink key={designer.id} to="/user/search/payment">
-                            <Card key={designer.id}>
-                                <CardImage src={designer.profileImage} alt={designer.name} />
-                                <CardInfo>
-                                    <CardName>{designer.name}</CardName>
-                                    <CardDetail>{designer.region}</CardDetail>
-                                </CardInfo>
-                                <CardInfo>
-                                    <CardDetail />
-                                    <CardDetail>{designer.specialties.join(', ')}</CardDetail>
-                                </CardInfo>
-                            </Card>
-                        </StyledLink>
-                    ))}
+                    {designers.map(
+                        (designer): React.ReactNode => (
+                            <StyledLink key={designer.id}>
+                                <Card>
+                                    <CardImage src={designer.profileImageURL} alt={designer.name} />
+                                    <CardInfo>
+                                        <CardName>{designer.name}</CardName>
+                                        <CardDetail>{designer.region}</CardDetail>
+                                    </CardInfo>
+                                    <CardInfo>
+                                        <CardDetail />
+                                        <CardDetail>{designer.specialization}</CardDetail>
+                                    </CardInfo>
+                                </Card>
+                            </StyledLink>
+                        ),
+                    )}
                 </HorizontalScrollContainer>
 
                 {/* 과거에 컨설팅 예약을 했던 디자이너 리스트 */}
                 <SectionTitle>최근 디자이너</SectionTitle>
                 <HorizontalScrollContainer>
-                    {designers.map(designer => (
-                        <StyledLink key={designer.id} to="/user/search/payment">
-                            <Card key={designer.id}>
-                                <CardImage src={designer.profileImage} alt={designer.name} />
-                                <CardInfo>
-                                    <CardName>{designer.name}</CardName>
-                                    <CardDetail>{designer.region}</CardDetail>
-                                </CardInfo>
-                                <CardInfo>
-                                    <CardDetail />
-                                    <CardDetail>{designer.specialties.join(', ')}</CardDetail>
-                                </CardInfo>
-                            </Card>
-                        </StyledLink>
-                    ))}
+                    {designers.map(
+                        (designer): React.ReactNode => (
+                            <StyledLink key={designer.id}>
+                                <Card>
+                                    <CardImage src={designer.profileImageURL} alt={designer.name} />
+                                    <CardInfo>
+                                        <CardName>{designer.name}</CardName>
+                                        <CardDetail>{designer.region}</CardDetail>
+                                    </CardInfo>
+                                    <CardInfo>
+                                        <CardDetail />
+                                        <CardDetail>{designer.specialization}</CardDetail>
+                                    </CardInfo>
+                                </Card>
+                            </StyledLink>
+                        ),
+                    )}
                 </HorizontalScrollContainer>
             </FamousContainer>
         </HomeContainer>
@@ -117,7 +121,7 @@ const ReservationInfo = styled.div`
 `
 
 // Link 스타일 지정 (텍스트 데코레이션 제거, 컬러 상속)
-const StyledLink = styled(Link)`
+const StyledLink = styled.div`
     text-decoration: none;
     color: inherit;
 `

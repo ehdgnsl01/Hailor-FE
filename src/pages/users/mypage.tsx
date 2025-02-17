@@ -1,8 +1,6 @@
 import styled from 'styled-components'
 import GoogleOauthLogin from '../../components/googleOauthLogin.tsx'
 import { userStore } from '../../store/user.ts'
-import { useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 
 const MyPageLayout = styled.div`
     display: flex;
@@ -35,13 +33,7 @@ const Text = styled.span`
 
 function MyPage() {
     const { getUser } = userStore()
-    const navigate = useNavigate()
     const user = getUser()
-    useEffect(() => {
-        if (user.role && user.role !== 'USER') {
-            navigate('/admin')
-        }
-    }, [user, navigate])
 
     return (
         <MyPageLayout>

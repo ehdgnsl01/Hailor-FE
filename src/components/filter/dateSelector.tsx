@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import Calendar from 'react-calendar'
 import 'react-calendar/dist/Calendar.css'
-import { CalenderIcon } from './icon'
+import { CalenderIcon } from '../icon'
 
 interface Props {
     date: Date | null
@@ -169,6 +169,7 @@ const CustomCalender = styled(Calendar)`
 const dateConverter = ['일', '월', '화', '수', '목', '금', '토']
 
 function DateSelector({ date, hasInformation, setDate }: Props) {
+    const minDate = new Date()
     return (
         <Layout>
             {hasInformation && date ? (
@@ -181,7 +182,8 @@ function DateSelector({ date, hasInformation, setDate }: Props) {
             )}
             <CustomCalender
                 value={date}
-                defaultActiveStartDate={new Date()}
+                defaultActiveStartDate={minDate}
+                minDate={minDate}
                 onChange={value => setDate(value as Date)}
                 calendarType="gregory"
                 defaultView="month"

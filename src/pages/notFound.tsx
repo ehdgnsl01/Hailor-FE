@@ -79,7 +79,7 @@ const HomeButton = styled.button`
     background-color: #35376e;
     color: #fff;
     border: none;
-    border-radius: 0.5rem;
+    border-radius: 2rem;
     font-size: 2rem;
     cursor: pointer;
     transition: background-color 0.3s ease;

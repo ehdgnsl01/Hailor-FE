@@ -61,7 +61,7 @@ const ButtonItem = styled.div<{ selected: boolean; index: number; total: number 
     ${({ selected, index, total }) =>
         selected &&
         `
-            transform: translateX(${index < total / 2 ? '10px' : '-10px'});
+            transform: translateX(${total === 1 ? 0 : index < total / 2 ? '10px' : '-10px'});
             transition: transform 0.4s ease-in-out;
     `}
 `

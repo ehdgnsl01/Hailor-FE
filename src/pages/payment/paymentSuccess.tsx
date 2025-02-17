@@ -1,7 +1,10 @@
 import styled from 'styled-components'
-import PaymentCaution from '../../components/paymentCaution.tsx'
-import { useNavigate, useOutletContext } from 'react-router-dom'
-import { IPaymentContext } from '../../types/paymentContext.ts'
+import PaymentCaution from '../../components/payment/paymentCaution.tsx'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { VITE_SEVER_URL } from '../../config'
+import { paymentStore } from '../../store/payment.ts'
+import { userStore } from '../../store/user.ts'
+import { useEffect } from 'react'
 
 const Layout = styled.div`
     position: absolute;
@@ -18,19 +21,47 @@ const Layout = styled.div`
 `
 
 function PaymentSuccess() {
+    const [searchParams] = useSearchParams()
     const navigate = useNavigate()
-    const { backStatus, closeModal } = useOutletContext<IPaymentContext>()
+    const { getReservationId, getReservationType, setPgToken } = paymentStore()
+    const { getToken } = userStore()
+
+    const token = getToken()
+    const pg_token = searchParams.get('pg_token')
+    const reservationId = getReservationId()
+    const reservationType = getReservationType()
+    useEffect(() => {
+        setPgToken(pg_token || '')
+    }, [pg_token, setPgToken])
+
+    const onClick = () => {
+        if (pg_token && reservationType === 'OFFLINE') {
+            fetch(`${VITE_SEVER_URL}/api/v1/payment/kakao-pay/confirm`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    reservationId: reservationId,
+                    pgToken: pg_token,
+                }),
+            }).then(() => {
+                navigate('/user')
+            })
+        } else {
+            navigate('/user')
+        }
+    }
+
     return (
         <Layout>
             <PaymentCaution
                 size={'2.4rem'}
                 status={true}
-                text={'결제에 성공했어요'}
+                text={pg_token && reservationType === 'OFFLINE' ? '결제에 성공했어요' : '비대면 절차를 완료하면 결제가 완료돼요'}
                 onClick={() => {
-                    if (backStatus === 2) {
-                        closeModal()
-                    }
-                    navigate('/user/search')
+                    onClick()
                 }}
             />
         </Layout>

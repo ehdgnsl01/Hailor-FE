@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-import { ChevronDownIcon } from './icon'
-import { ButtonTypes } from '../types/button.ts'
+import { ChevronDownIcon } from '../icon'
+import { ButtonTypes } from '../../types/button.ts'
 
 interface Props {
     text: string

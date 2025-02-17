@@ -12,16 +12,10 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
         setQuery(e.target.value)
     }
 
-    const handleSearch = () => {
-        // 여기에 백엔드로 검색어를 전송하는 코드를 넣으면 됩니다.
-        // 예시: fetch('/api/search', { method: 'POST', body: JSON.stringify({ query }) })
-        onSearch(query)
-    }
-
     return (
         <Container>
             <Input type="text" placeholder="디자이너, 헤어샵을 검색해 보세요." value={query} onChange={handleInputChange} />
-            <SearchIconButton onClick={handleSearch}>
+            <SearchIconButton onClick={() => onSearch(query)}>
                 <MagnifyingGlassIcon />
             </SearchIconButton>
         </Container>

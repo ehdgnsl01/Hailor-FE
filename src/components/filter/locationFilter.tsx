@@ -1,57 +1,55 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import styled from 'styled-components'
-import regionData from '../../data/regionData'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { getRegions } from '../../api/designer.ts'
+import { IRegion } from '../../types/designer.ts'
+import { userStore } from '../../store/user.ts'
 
 interface LocationFilterProps {
-    initialSelected: string[]
-    onConfirm: (selected: string[]) => void
+    initialSelected: IRegion | null
+    onConfirm: (selected: IRegion | null) => void
 }
 
-const broadRegions = Object.keys(regionData)
+// const broadRegions = Object.keys(regionData)
 
-const LocationFilter: React.FC<LocationFilterProps> = ({ initialSelected, onConfirm }) => {
-    const [selectedBroad, setSelectedBroad] = useState<string>(broadRegions[0])
-    const [selectedSubs, setSelectedSubs] = useState<string[]>(initialSelected)
-
-    useEffect(() => {
-        setSelectedSubs(initialSelected)
-    }, [initialSelected])
+function LocationFilter({ initialSelected, onConfirm }: LocationFilterProps) {
+    const [selectedBroad, setSelectedBroad] = useState<string>('서울')
+    const [selectedSubs, setSelectedSubs] = useState<IRegion | null>(initialSelected)
+    const { getToken } = userStore()
+    const { data } = useSuspenseQuery({
+        queryKey: ['region'],
+        queryFn: () => getRegions(getToken()),
+    })
 
     const handleBroadClick = (region: string) => {
         setSelectedBroad(region)
     }
 
-    const handleSubClick = (sub: string) => {
-        if (selectedSubs.includes(sub)) {
-            setSelectedSubs(selectedSubs.filter(item => item !== sub))
-        } else {
-            setSelectedSubs([...selectedSubs, sub])
-        }
+    const handleSubClick = (sub: IRegion) => {
+        setSelectedSubs(sub)
     }
 
     return (
         <Container>
             <ColumnContainer>
                 <LeftColumn>
-                    {broadRegions.map(region => (
-                        <BroadRegionItem key={region} selected={region === selectedBroad} onClick={() => handleBroadClick(region)}>
-                            {region}
-                        </BroadRegionItem>
-                    ))}
+                    <BroadRegionItem key={'서울'} selected={'서울' === selectedBroad} onClick={() => handleBroadClick('서울')}>
+                        {'서울'}
+                    </BroadRegionItem>
                 </LeftColumn>
                 <RightColumn>
-                    {regionData[selectedBroad].map(sub => (
-                        <SubRegionItem key={sub} selected={selectedSubs.includes(sub)} onClick={() => handleSubClick(sub)}>
-                            {sub}
+                    {data.map(sub => (
+                        <SubRegionItem
+                            key={sub.id}
+                            selected={selectedSubs !== null && selectedSubs.id === sub.id}
+                            onClick={() => handleSubClick(sub)}
+                        >
+                            {sub.name}
                         </SubRegionItem>
                     ))}
                 </RightColumn>
             </ColumnContainer>
-            {selectedSubs.length > 0 && (
-                <ConfirmButton onClick={() => onConfirm(selectedSubs)}>
-                    {selectedSubs.length === 1 ? `${selectedSubs[0]} 추가하기` : `${selectedSubs[0]} 외 ${selectedSubs.length - 1}곳 추가하기`}
-                </ConfirmButton>
-            )}
+            {selectedSubs !== null && <ConfirmButton onClick={() => onConfirm(selectedSubs)}>{`${selectedSubs.name} 추가하기`}</ConfirmButton>}
         </Container>
     )
 }
@@ -77,7 +75,6 @@ const ColumnContainer = styled.div`
 
 const LeftColumn = styled.div`
     border-right: 0.1rem solid #ccc;
-    padding-right: 1rem;
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -85,7 +82,6 @@ const LeftColumn = styled.div`
 `
 
 const RightColumn = styled.div`
-    padding-left: 1rem;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -110,8 +106,8 @@ const SubRegionItem = styled.div<{ selected: boolean }>`
 `
 
 const ConfirmButton = styled.button`
-    margin: 0 auto;
-    margin-top: 1rem;
+    justify-self: center;
+    margin-top: 2rem;
     padding: 1.2rem 1.2rem;
     background-color: #35376e;
     color: #fafcfe;

@@ -15,6 +15,7 @@ import Payment from './pages/payment/payment.tsx'
 import PaymentCancel from './pages/payment/paymentCancel.tsx'
 import PaymentFailure from './pages/payment/paymentFailure.tsx'
 import PaymentSuccess from './pages/payment/paymentSuccess.tsx'
+import PgServer from './pages/payment/pgServer.tsx'
 import NotFound from './pages/notFound.tsx'
 
 const Layout = styled.div`
@@ -48,9 +49,10 @@ function App() {
     return (
         <Layout>
             <QueryClientProvider client={queryClient}>
-                <BrowserRouter>
+                <BrowserRouter basename="/">
                     <Routes>
                         <Route path="" element={<Main />} />
+                        <Route path="payment/*" element={<PgServer />} />
                         <Route path="user" element={<User />}>
                             <Route path="" element={<Home />} />
                             <Route path="search" element={<Search />}>

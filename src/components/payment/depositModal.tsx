@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
-import { ChevronLeftIcon, CrossIcon } from './icon'
-import SelectButton from './selectButton.tsx'
+import { ChevronLeftIcon, CrossIcon } from '../icon'
+import SelectButton from '../buttons/selectButton.tsx'
 import PaymentCaution from './paymentCaution.tsx'
 import { useState } from 'react'
 
@@ -162,11 +162,11 @@ function DepositModal({ price, onClose }: Props) {
                     <PaymentCaution
                         size={'1.6rem'}
                         status={true}
-                        text={'디자이너님이 확인하시면 예약이 완료되요'}
+                        text={'입금이 확인되면 예약이 완료돼요'}
                         onClick={() => {
                             setShowSuccess(false)
                             onClose()
-                            navigate('/user/search')
+                            navigate('/user')
                         }}
                     />
                 </ModalLayout>

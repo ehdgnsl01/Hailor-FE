@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
-import { VITE_SERVER_URL } from '../config'
+import { googleClientId, VITE_SEVER_URL } from '../config'
 import { getRegisterTerm } from '../api/users.ts'
 import { userStore } from '../store/user.ts'
 
@@ -84,8 +84,6 @@ const CheckLabel = styled.label`
     text-align: left;
 `
 
-const clientId = '286907731085-sakmukmthfcmb7f6t6s5el9ttkc968o4.apps.googleusercontent.com'
-
 function Register({ onClick, credential }: { onClick: () => void; credential: string }) {
     const [checks, setCheck] = useState<number>(0)
     const { setToken } = userStore()
@@ -141,7 +139,7 @@ function Register({ onClick, credential }: { onClick: () => void; credential: st
                             .map((bit, index) => (bit === '1' ? index : -1))
                             .filter(index => index !== -1)
                         console.log(credential, agreedTerms)
-                        fetch(`${VITE_SERVER_URL}/api/v1/auth/sign-up`, {
+                        fetch(`${VITE_SEVER_URL}/api/v1/auth/sign-up`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -150,7 +148,7 @@ function Register({ onClick, credential }: { onClick: () => void; credential: st
                         })
                             .then(response => response.json())
                             .then(() => {
-                                fetch(`${VITE_SERVER_URL}/api/v1/auth/login`, {
+                                fetch(`${VITE_SEVER_URL}/api/v1/auth/login`, {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -178,11 +176,11 @@ function GoogleOauthLogin() {
     const { setToken } = userStore()
 
     return (
-        <GoogleOAuthProvider clientId={clientId}>
+        <GoogleOAuthProvider clientId={googleClientId}>
             <GoogleLogin
                 theme={'outline'}
                 onSuccess={credentialResponse => {
-                    fetch(`${VITE_SERVER_URL}/api/v1/auth/login`, {
+                    fetch(`${VITE_SEVER_URL}/api/v1/auth/login`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

@@ -1,4 +1,5 @@
 export interface ITime {
     time: string
-    status: boolean
+    booked: boolean
+    index: number
 }

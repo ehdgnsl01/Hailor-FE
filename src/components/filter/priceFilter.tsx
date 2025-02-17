@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import RangeSlider from '../rangeSlider'
+import RangeSlider from '../buttons/rangeSlider.tsx'
 
 interface PriceRange {
     min: number

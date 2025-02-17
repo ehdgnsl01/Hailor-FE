@@ -1,7 +1,8 @@
 import styled from 'styled-components'
 import { Link, useLocation } from 'react-router-dom'
 import * as React from 'react'
-import { pages } from './navigationConstants'
+
+const pages = ['홈', '검색', '내 예약', '마이'] as const
 
 export type Page = (typeof pages)[number]
 

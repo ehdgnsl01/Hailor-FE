@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-import PaymentCaution from '../../components/paymentCaution.tsx'
-import { useNavigate, useOutletContext } from 'react-router-dom'
-import { IPaymentContext } from '../../types/paymentContext.ts'
+import PaymentCaution from '../../components/payment/paymentCaution.tsx'
+import { useNavigate } from 'react-router-dom'
 
 const Layout = styled.div`
     position: absolute;
@@ -18,7 +17,6 @@ const Layout = styled.div`
 `
 
 function PaymentCancel() {
-    const { backStatus, closeModal } = useOutletContext<IPaymentContext>()
     const navigate = useNavigate()
     return (
         <Layout>
@@ -27,10 +25,7 @@ function PaymentCancel() {
                 status={false}
                 text={'결제를 취소했어요'}
                 onClick={() => {
-                    if (backStatus === 2) {
-                        closeModal()
-                    }
-                    navigate(-backStatus)
+                    navigate('/user/home')
                 }}
             />
         </Layout>

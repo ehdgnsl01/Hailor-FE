@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import PaymentCaution from '../../components/payment/paymentCaution.tsx'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { VITE_SEVER_URL } from '../../config'
+import { VITE_SERVER_URL } from '../../config'
 import { paymentStore } from '../../store/payment.ts'
 import { userStore } from '../../store/user.ts'
 import { useEffect } from 'react'
@@ -36,7 +36,7 @@ function PaymentSuccess() {
 
     const onClick = () => {
         if (pg_token && reservationType === 'OFFLINE') {
-            fetch(`${VITE_SEVER_URL}/api/v1/payment/kakao-pay/confirm`, {
+            fetch(`${VITE_SERVER_URL}/api/v1/payment/kakao-pay/confirm`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

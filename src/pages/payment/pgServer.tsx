@@ -9,7 +9,7 @@ import RadioButton from '../../components/buttons/radioButton.tsx'
 import DateSelector from '../../components/filter/dateSelector.tsx'
 import TimeSelector from '../../components/filter/timeSelector.tsx'
 import SelectButton from '../../components/buttons/selectButton.tsx'
-import { VITE_SEVER_URL } from '../../config'
+import { VITE_SERVER_URL } from '../../config'
 import { userStore } from '../../store/user.ts'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { IReservationFull } from '../../types/reservation.ts'
@@ -149,7 +149,7 @@ function PgServer() {
     }, [])
 
     useEffect(() => {
-        fetch(`${VITE_SEVER_URL}/api/v1/reservation?size=1`, {
+        fetch(`${VITE_SERVER_URL}/api/v1/reservation?size=1`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ function PgServer() {
                 const res = data as {
                     reservations: IReservationFull[]
                 }
-                fetch(`${VITE_SEVER_URL}/api/v1/designer?size=1&name=${res.reservations[0].designer.name}`, {
+                fetch(`${VITE_SERVER_URL}/api/v1/designer?size=1&name=${res.reservations[0].designer.name}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

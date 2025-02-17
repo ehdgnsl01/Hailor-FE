@@ -21,6 +21,12 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: make env
+        run: |
+          touch ./.env
+          echo 'VITE_SERVER_URL=${{ secrets.VITE_SERVER_URL }}' > ./.env
+          echo 'VITE_GOOGLE_CLIENT_ID=${{ secrets.VITE_GOOGLE_CLIENT_ID }}' >> ./.env
+
       - name: Build Project
         run: |
           yarn build 

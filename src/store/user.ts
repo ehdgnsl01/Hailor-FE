@@ -1,6 +1,6 @@
 import * as jwt from 'jsonwebtoken'
 import { create } from 'zustand/react'
-import { VITE_SEVER_URL } from '../config'
+import { VITE_SERVER_URL } from '../config'
 import { IToken, IUser } from '../types/users.ts'
 
 interface UserStore {
@@ -32,7 +32,7 @@ export const userStore = create<UserStore>((set, get) => ({
         const exp = parseInt(sessionStorage.getItem('exp') || '0')
         if (!get().isRefresh && exp - Math.floor(Date.now() / 1000) < 1000) {
             set({ isRefresh: true })
-            fetch(`${VITE_SEVER_URL}/api/v1/auth/refresh?token=${sessionStorage.getItem('refreshToken')}`, {
+            fetch(`${VITE_SERVER_URL}/api/v1/auth/refresh?token=${sessionStorage.getItem('refreshToken')}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

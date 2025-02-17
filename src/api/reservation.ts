@@ -1,8 +1,8 @@
 import { IPostReservation } from '../types/reservation.ts'
-import { VITE_SEVER_URL } from '../config'
+import { VITE_SERVER_URL } from '../config'
 
 export async function postReservation(request: IPostReservation): Promise<void> {
-    const res = await fetch(`${VITE_SEVER_URL}/api/v1/reservation`, {
+    const res = await fetch(`${VITE_SERVER_URL}/api/v1/reservation`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

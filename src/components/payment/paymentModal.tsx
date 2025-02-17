@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import PaymentCaution from '../../components/payment/paymentCaution.tsx'
-import { VITE_SEVER_URL } from '../../config'
+import { VITE_SERVER_URL } from '../../config'
 import { userStore } from '../../store/user.ts'
 import { paymentStore } from '../../store/payment.ts'
 import { useEffect } from 'react'
@@ -25,7 +25,7 @@ function PaymentModal() {
     const token = getToken()
 
     useEffect(() => {
-        fetch(`${VITE_SEVER_URL}/api/v1/payment/kakao-pay`, {
+        fetch(`${VITE_SERVER_URL}/api/v1/payment/kakao-pay`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

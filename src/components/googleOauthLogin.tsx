@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google'
 import { useSuspenseQuery } from '@tanstack/react-query'
 
-import { googleClientId, VITE_SEVER_URL } from '../config'
+import { googleClientId, VITE_SERVER_URL } from '../config'
 import { getRegisterTerm } from '../api/users.ts'
 import { userStore } from '../store/user.ts'
 
@@ -139,7 +139,7 @@ function Register({ onClick, credential }: { onClick: () => void; credential: st
                             .map((bit, index) => (bit === '1' ? index : -1))
                             .filter(index => index !== -1)
                         console.log(credential, agreedTerms)
-                        fetch(`${VITE_SEVER_URL}/api/v1/auth/sign-up`, {
+                        fetch(`${VITE_SERVER_URL}/api/v1/auth/sign-up`, {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -148,7 +148,7 @@ function Register({ onClick, credential }: { onClick: () => void; credential: st
                         })
                             .then(response => response.json())
                             .then(() => {
-                                fetch(`${VITE_SEVER_URL}/api/v1/auth/login`, {
+                                fetch(`${VITE_SERVER_URL}/api/v1/auth/login`, {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
@@ -180,7 +180,7 @@ function GoogleOauthLogin() {
             <GoogleLogin
                 theme={'outline'}
                 onSuccess={credentialResponse => {
-                    fetch(`${VITE_SEVER_URL}/api/v1/auth/login`, {
+                    fetch(`${VITE_SERVER_URL}/api/v1/auth/login`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',

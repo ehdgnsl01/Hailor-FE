@@ -12,7 +12,7 @@ import SelectButton from '../../components/buttons/selectButton.tsx'
 import { postReservation } from '../../api/reservation.ts'
 import PaymentModal from '../../components/payment/paymentModal.tsx'
 import { userStore } from '../../store/user.ts'
-import { VITE_SEVER_URL } from '../../config'
+import { VITE_SERVER_URL } from '../../config'
 import { paymentStore } from '../../store/payment.ts'
 import { ITime } from '../../types/time.ts'
 import { ISearchContext } from '../../types/context.ts'
@@ -120,7 +120,7 @@ function Payment() {
             return postReservation(body)
         },
         onSuccess: async () => {
-            fetch(`${VITE_SEVER_URL}/api/v1/reservation?size=1`, {
+            fetch(`${VITE_SERVER_URL}/api/v1/reservation?size=1`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',

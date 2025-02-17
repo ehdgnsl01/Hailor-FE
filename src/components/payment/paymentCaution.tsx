@@ -47,8 +47,9 @@ function PaymentCaution({ status, text, onClick, size }: Props) {
     const reservationId = getReservationId()
     const reservationType = getReservationType()
     const paymentType = getPaymentType()
+
     useEffect(() => {
-        if (status != true || !(reservationType === 'OFFLINE' && paymentType === 'KAKAO_PAY')) {
+        if (status != true || !(reservationType === 'ONLINE' && paymentType === 'KAKAO_PAY')) {
             setTimeout(() => onClick(), 2000)
         }
     }, [status, reservationType, paymentType, onClick])

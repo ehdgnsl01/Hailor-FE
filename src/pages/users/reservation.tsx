@@ -63,7 +63,7 @@ function ReservationComponent() {
     if (!reservations) {
         return (
             <NoReservationContainer>
-                <NoReservationText>예약하신 일정이 없습니다.</NoReservationText>
+                <NoReservationText>예약하신 일정이 없습니다</NoReservationText>
             </NoReservationContainer>
         )
     }
@@ -92,7 +92,7 @@ function ReservationComponent() {
                             <SubText>{getDay(reservations[0].date)}</SubText>
                         </InfoItem>
                         <InfoItem>
-                            <SubText>{`${10 + Math.floor(reservations[0].slot / 2)}:${reservations[0].slot % 2 === 0 ? 0 : 30}`}</SubText>
+                            <SubText>{`${10 + Math.floor(reservations[0].slot / 2)}:${String(reservations[0].slot % 2 === 0 ? 0 : 30).padStart(2, '0')}`}</SubText>
                             <SubText>·</SubText>
                             <SubText>{reservations[0].meetingType === 'ONLINE' ? '비대면' : '대면'}</SubText>
                         </InfoItem>

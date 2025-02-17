@@ -1,16 +1,16 @@
 import { Outlet } from 'react-router-dom'
 import { useState, useEffect, useMemo } from 'react'
+import styled, { keyframes } from 'styled-components'
+
 import SearchBox from '../../components/searchBox.tsx'
 import FilterButtonContainer from '../../components/buttons/filterButtonContainer.tsx'
 import FaceFilter from '../../components/filter/faceFilter.tsx'
 import LocationFilter from '../../components/filter/locationFilter.tsx'
 import PriceFilter from '../../components/filter/priceFilter.tsx'
 import ProfileListComponent from '../../components/profileListComponent.tsx'
-import styled, { keyframes } from 'styled-components'
 import DateSelector from '../../components/filter/dateSelector.tsx'
 import { IGetDesignerListFilter, IRegion } from '../../types/designer.ts'
 import { CrossIcon } from '../../components/icon'
-import { ISearchContext } from '../../types/context.ts'
 import { userStore } from '../../store/user.ts'
 import NeedLogin from '../../components/needLogin.tsx'
 
@@ -24,7 +24,6 @@ function Search() {
     const [dateFilterSelected, setDateFilterSelected] = useState<Date | null>(null)
     const [priceFilterSelected, setPriceFilterSelected] = useState<{ min: number; max: number } | null>(null)
     const [filter, setFilter] = useState<IGetDesignerListFilter>({ size: 10 })
-    const [context, setContext] = useState<ISearchContext | null>(null)
     const memoFilter = useMemo(() => filter, [filter])
     const { getUser } = userStore()
     const user = getUser()
@@ -88,7 +87,7 @@ function Search() {
 
     return (
         <PageContainer>
-            <Outlet context={context} />
+            <Outlet />
             <SearchBox onSearch={setQuery} />
             <FilterButtonContainer
                 faceFilterSelected={faceFilterSelected}
@@ -143,7 +142,7 @@ function Search() {
                     </FilterPanel>
                 </Overlay>
             )}
-            <ProfileListComponent filter={memoFilter} setContext={setContext} time={dateFilterSelected || new Date()} />
+            <ProfileListComponent filter={memoFilter} time={dateFilterSelected || new Date()} />
         </PageContainer>
     )
 }

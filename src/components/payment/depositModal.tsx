@@ -8,6 +8,7 @@ import { useState } from 'react'
 interface Props {
     price: number
     onClose: () => void
+    onSuccess: () => void
 }
 
 const ModalLayout = styled.div`
@@ -123,7 +124,7 @@ const InfoText = styled.span`
     color: rgba(41, 41, 41, 0.6);
 `
 
-function DepositModal({ price, onClose }: Props) {
+function DepositModal({ price, onClose, onSuccess }: Props) {
     const [showSuccess, setShowSuccess] = useState<boolean>(false)
     const [showCancel, setShowCancel] = useState<boolean>(false)
     const navigate = useNavigate()
@@ -155,7 +156,15 @@ function DepositModal({ price, onClose }: Props) {
                 </Rows>
             </ContentContainer>
             <ButtonContainer>
-                <SelectButton text1={'취소'} text2={'완료'} onClick1={() => setShowCancel(true)} onClick2={() => setShowSuccess(true)} />
+                <SelectButton
+                    text1={'취소'}
+                    text2={'완료'}
+                    onClick1={() => setShowCancel(true)}
+                    onClick2={() => {
+                        setShowSuccess(true)
+                        onSuccess()
+                    }}
+                />
             </ButtonContainer>
             {showSuccess && (
                 <ModalLayout>
@@ -164,7 +173,6 @@ function DepositModal({ price, onClose }: Props) {
                         status={true}
                         text={'입금이 확인되면 예약이 완료돼요'}
                         onClick={() => {
-                            setShowSuccess(false)
                             onClose()
                             navigate('/user')
                         }}

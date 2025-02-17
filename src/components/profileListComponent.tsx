@@ -2,25 +2,23 @@ import React from 'react'
 import styled from 'styled-components'
 import { IGetDesignerListFilter } from '../types/designer'
 import { useNavigate } from 'react-router-dom'
-import { useSuspenseQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { getDesigners } from '../api/designer.ts'
 import { userStore } from '../store/user.ts'
-import { ISearchContext } from '../types/context.ts'
+import { designerStore } from '../store/designer.ts'
 
 interface ProfileListComponentProps {
     filter: IGetDesignerListFilter
-    setContext: (context: ISearchContext) => void
     time: Date
 }
 
-const ProfileListComponent: React.FC<ProfileListComponentProps> = ({ filter, setContext, time }) => {
+const ProfileListComponent: React.FC<ProfileListComponentProps> = ({ filter, time }) => {
     const { getToken } = userStore()
+    const { setDesigner, setDate } = designerStore()
     const navigate = useNavigate()
-    const { data } = useSuspenseQuery({
+    const { data } = useQuery({
         queryKey: ['designer', filter],
         queryFn: () => getDesigners(filter, getToken()),
-        staleTime: 0,
-        gcTime: 0,
     })
 
     if (!data || data.designers.length === 0) {
@@ -35,10 +33,8 @@ const ProfileListComponent: React.FC<ProfileListComponentProps> = ({ filter, set
                     <StyledLink
                         key={designer.id}
                         onClick={() => {
-                            setContext({
-                                designer: designer,
-                                date: time,
-                            })
+                            setDate(time)
+                            setDesigner(designer)
                             console.log(time)
                             navigate('payment')
                         }}

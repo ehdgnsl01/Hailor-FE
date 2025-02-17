@@ -12,9 +12,6 @@ import Reservation from './pages/users/reservation.tsx'
 import MyPage from './pages/users/mypage.tsx'
 import Main from './pages/main.tsx'
 import Payment from './pages/payment/payment.tsx'
-import PaymentCancel from './pages/payment/paymentCancel.tsx'
-import PaymentFailure from './pages/payment/paymentFailure.tsx'
-import PaymentSuccess from './pages/payment/paymentSuccess.tsx'
 import PgServer from './pages/payment/pgServer.tsx'
 import NotFound from './pages/notFound.tsx'
 
@@ -56,14 +53,11 @@ function App() {
                         <Route path="user" element={<User />}>
                             <Route path="" element={<Home />} />
                             <Route path="search" element={<Search />}>
-                                <Route path="payment" element={<Payment />}>
-                                    <Route path="cancel" element={<PaymentCancel />} />
-                                    <Route path="failure" element={<PaymentFailure />} />
-                                    <Route path="success" element={<PaymentSuccess />} />
-                                </Route>
+                                <Route path="payment" element={<Payment />} />
                             </Route>
                             <Route path="reservation" element={<Reservation />} />
                             <Route path="mypage" element={<MyPage />} />
+                            <Route path="direct-reservation/payment" element={<Payment />} />
                         </Route>
                         <Route path="admin" element={<Admin />} />
                         <Route path="*" element={<NotFound />} />

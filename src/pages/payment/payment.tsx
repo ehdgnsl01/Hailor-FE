@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useOutletContext } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { useMutation } from '@tanstack/react-query'
 
@@ -15,8 +15,8 @@ import { userStore } from '../../store/user.ts'
 import { VITE_SERVER_URL } from '../../config'
 import { paymentStore } from '../../store/payment.ts'
 import { ITime } from '../../types/time.ts'
-import { ISearchContext } from '../../types/context.ts'
 import { IPostReservation, IReservationFull } from '../../types/reservation.ts'
+import { designerStore } from '../../store/designer.ts'
 
 const PaymentContainer = styled.div`
     position: fixed;
@@ -101,8 +101,9 @@ const Image = styled.img`
     object-fit: cover;
     object-position: top;
 `
+
 function Payment() {
-    const { designer, date } = useOutletContext<ISearchContext>()
+    const { designer, date } = designerStore()
     const navigate = useNavigate()
     const { getToken } = userStore()
     const { setReservationId, setReservationType, setPaymentType } = paymentStore()
@@ -138,8 +139,6 @@ function Payment() {
                     setPaymentType(res.reservations[0].paymentMethod)
                     if (res.reservations[0].paymentMethod === 'KAKAO_PAY') {
                         setShowPayment(true)
-                    } else {
-                        setShowDeposit(true)
                     }
                 })
         },
@@ -191,6 +190,10 @@ function Payment() {
         }
     }, [showDeposit])
 
+    if (designer.name === '') {
+        return <></>
+    }
+
     const back = () => navigate(-1)
     return (
         <>
@@ -213,9 +216,8 @@ function Payment() {
                         data={designer.meetingType.split('/')}
                         selected={selectedType}
                         onClick={(t: string) => {
-                            if (step === 0) {
-                                setStep(1)
-                            }
+                            setStep(1)
+                            setDate(date)
                             setType(t)
                         }}
                     />
@@ -224,9 +226,8 @@ function Payment() {
                             date={selectedDate}
                             hasInformation={true}
                             setDate={(t: Date) => {
-                                if (step === 1) {
-                                    setStep(2)
-                                }
+                                setStep(2)
+                                setTime(-1)
                                 setDate(t)
                             }}
                         />
@@ -238,9 +239,7 @@ function Payment() {
                             times={times}
                             selected={timeSlot}
                             setTime={(t: number) => {
-                                if (step === 2) {
-                                    setStep(3)
-                                }
+                                setStep(3)
                                 setTime(t)
                             }}
                         />
@@ -256,21 +255,7 @@ function Payment() {
                         <SelectButton
                             text1={'계좌이체 결제'}
                             text2={'카카오페이 결제'}
-                            onClick1={() => {
-                                const data: IPostReservation = {
-                                    secret: {
-                                        token: token,
-                                    },
-                                    body: {
-                                        designerId: designer.id,
-                                        reservationDate: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
-                                        slot: timeSlot,
-                                        meetingType: selectedType === '대면' ? 'OFFLINE' : 'ONLINE',
-                                        paymentMethod: 'BANK_TRANSFER',
-                                    },
-                                }
-                                mutate.mutate(data)
-                            }}
+                            onClick1={() => setShowDeposit(true)}
                             onClick2={() => {
                                 const data: IPostReservation = {
                                     secret: {
@@ -296,6 +281,21 @@ function Payment() {
                     onClose={() => {
                         setShowDeposit(false)
                         navigate('/user')
+                    }}
+                    onSuccess={() => {
+                        const data: IPostReservation = {
+                            secret: {
+                                token: token,
+                            },
+                            body: {
+                                designerId: designer.id,
+                                reservationDate: `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`,
+                                slot: timeSlot,
+                                meetingType: selectedType === '대면' ? 'OFFLINE' : 'ONLINE',
+                                paymentMethod: 'BANK_TRANSFER',
+                            },
+                        }
+                        mutate.mutate(data)
                     }}
                 />
             )}

@@ -31,6 +31,20 @@ export async function getDesigners(filter: IGetDesignerListFilter, token: string
     return res.json()
 }
 
+export async function getHotDesigners(token: string): Promise<IGetDesignerList> {
+    const res = await fetch(`${VITE_SERVER_URL}/api/v1/designer/popular`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+    })
+    if (!res.ok) {
+        return {} as IGetDesignerList
+    }
+    return res.json()
+}
+
 export async function getDesignerSchedule(id: number, date: string, token: string): Promise<IGetDesignerScheduleResponse> {
     const res = await fetch(`${VITE_SERVER_URL}/api/v1/designer/${id}/schedule?date=${date}`, {
         method: 'GET',

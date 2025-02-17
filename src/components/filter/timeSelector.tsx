@@ -76,7 +76,7 @@ function TimeSelector({ id, date, times, selected, setTime }: Props) {
         const anteMeridiem = temp.filter(({ time }) => parseInt(time.split(':')[0], 10) < 12)
         const postMeridiem = temp.filter(({ time }) => parseInt(time.split(':')[0], 10) >= 12)
         return [anteMeridiem, postMeridiem]
-    }, [data, times])
+    }, [data, times, date])
 
     return (
         <Layout>

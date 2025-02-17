@@ -1,5 +1,9 @@
 import styled from 'styled-components'
 
+interface HeaderProps {
+    role?: 'admin' | 'user'
+}
+
 const HeaderLayout = styled.header`
     position: sticky;
     display: flex;
@@ -15,13 +19,13 @@ const HeaderLayout = styled.header`
 
 const HeaderContent = styled.div`
     display: flex;
-    align-items: center;
+    align-items: baseline;
     justify-content: center;
-    padding: 0.4rem 0; /* 텍스트 여백 */
+    padding: 0.4rem 0;
 `
 
 const GradientText = styled.span`
-    font-weight: 500; /* 두꺼운 글씨 */
+    font-weight: 500;
     font-style: italic;
     font-size: 2.4rem;
     background: linear-gradient(45deg, #292959, #5e58bf);
@@ -31,11 +35,18 @@ const GradientText = styled.span`
     color: transparent;
 `
 
-function Header() {
+const AdminTag = styled.span`
+    font-size: 1.2rem;
+    color: red;
+    margin-left: 0.5rem;
+`
+
+function Header({ role }: HeaderProps) {
     return (
         <HeaderLayout>
             <HeaderContent>
                 <GradientText>Hailor</GradientText>
+                {role === 'admin' && <AdminTag>Admin</AdminTag>}
             </HeaderContent>
         </HeaderLayout>
     )

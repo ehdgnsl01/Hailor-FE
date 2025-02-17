@@ -9,9 +9,11 @@ import { VITE_SERVER_URL } from '../../config'
 import { getHotDesigners } from '../../api/designer.ts'
 import { Designer } from '../../types/designer.ts'
 import { designerStore } from '../../store/designer.ts'
+import NeedLogin from '../../components/needLogin.tsx'
 
 function Upcoming() {
-    const [reservations, setReservations] = useState<IReservationFull[] | null>(null)
+    const [reservations, setReservations] = useState<IReservationFull[]>([])
+    const [isLoading, setLoading] = useState<boolean>(true)
     const { getToken } = userStore()
     const navigate = useNavigate()
     const token = getToken()
@@ -26,6 +28,7 @@ function Upcoming() {
     }
 
     useEffect(() => {
+        setLoading(true)
         fetch(`${VITE_SERVER_URL}/api/v1/reservation?size=20`, {
             method: 'GET',
             headers: {
@@ -43,10 +46,19 @@ function Upcoming() {
                     .filter(reservation => reservation.status === 'RESERVED' || reservation.status === 'CONFIRMED')
                     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
                 setReservations(result)
+                setTimeout(() => setLoading(false), 500)
             })
     }, [token])
 
-    if (!reservations) {
+    if (isLoading) {
+        return (
+            <UpcomingReservationSection>
+                <SectionTitle>다가오는 예약</SectionTitle>
+                <ReservationCardSkeleton />
+            </UpcomingReservationSection>
+        )
+    }
+    if (reservations.length === 0) {
         return (
             <UpcomingReservationSection>
                 <SectionTitle>다가오는 예약</SectionTitle>
@@ -76,33 +88,49 @@ function Upcoming() {
 function HotDesigner() {
     const { getToken } = userStore()
     const token = getToken()
-    const { data } = useQuery({
+    const { data, isLoading } = useQuery({
         queryKey: ['hotDesigner'],
         queryFn: () => getHotDesigners(token),
     })
 
-    if (!data || data.designers.length === 0) {
-        return <></>
+    if (isLoading) {
+        return (
+            <HorizontalScrollContainer>
+                <Card>
+                    <CardImageSkeleton />
+                </Card>
+                <Card>
+                    <CardImageSkeleton />
+                </Card>
+                <Card>
+                    <CardImageSkeleton />
+                </Card>
+                <Card>
+                    <CardImageSkeleton />
+                </Card>
+            </HorizontalScrollContainer>
+        )
     }
 
     return (
         <HorizontalScrollContainer>
-            {data.designers.map(
-                (designer): React.ReactNode => (
-                    <StyledLink key={designer.id}>
-                        <Card>
-                            <CardImage src={designer.profileImageURL} alt={designer.name} />
-                            <CardInfo>
-                                <CardName>{designer.name}</CardName>
-                            </CardInfo>
-                            <CardInfo>
-                                <CardDetail>{designer.region}</CardDetail>
-                                <CardDetail>{designer.specialization}</CardDetail>
-                            </CardInfo>
-                        </Card>
-                    </StyledLink>
-                ),
-            )}
+            {data &&
+                data.designers.map(
+                    (designer): React.ReactNode => (
+                        <StyledLink key={designer.id}>
+                            <Card>
+                                <CardImage src={designer.profileImageURL} alt={designer.name} />
+                                <CardInfo>
+                                    <CardName>{designer.name}</CardName>
+                                </CardInfo>
+                                <CardInfo>
+                                    <CardDetail>{designer.region}</CardDetail>
+                                    <CardDetail>{designer.specialization}</CardDetail>
+                                </CardInfo>
+                            </Card>
+                        </StyledLink>
+                    ),
+                )}
         </HorizontalScrollContainer>
     )
 }
@@ -111,9 +139,11 @@ function RecentDesigner() {
     const { getToken } = userStore()
     const { setDesigner, setDate } = designerStore()
     const navigate = useNavigate()
-    const [designers, setDesigners] = useState<Designer[] | null>(null)
+    const [designers, setDesigners] = useState<Designer[]>([])
+    const [isLoading, setLoading] = useState(true)
     const token = getToken()
     useEffect(() => {
+        setLoading(true)
         fetch(`${VITE_SERVER_URL}/api/v1/reservation/recently-finished?size=50`, {
             method: 'GET',
             headers: {
@@ -132,8 +162,9 @@ function RecentDesigner() {
                     }
                 })
                 setDesigners(acc)
+                setTimeout(() => setLoading(false), 500)
             })
-    }, [token])
+    }, [token, setLoading])
 
     const onClick = (name: string) => {
         fetch(`${VITE_SERVER_URL}/api/v1/designer?size=1&name=${name}`, {
@@ -152,9 +183,29 @@ function RecentDesigner() {
         navigate('direct-reservation/payment')
     }
 
-    if (designers === null) {
+    if (isLoading) {
+        return (
+            <HorizontalScrollContainer>
+                <Card>
+                    <CardImageSkeleton />
+                </Card>
+                <Card>
+                    <CardImageSkeleton />
+                </Card>
+                <Card>
+                    <CardImageSkeleton />
+                </Card>
+                <Card>
+                    <CardImageSkeleton />
+                </Card>
+            </HorizontalScrollContainer>
+        )
+    }
+
+    if (designers.length === 0) {
         return <InfoText>과거에 예약한 디자이너가 없습니다</InfoText>
     }
+
     return (
         <HorizontalScrollContainer>
             {designers.map(
@@ -176,6 +227,13 @@ function RecentDesigner() {
 }
 
 function Home() {
+    const { getUser } = userStore()
+    const user = getUser()
+
+    if (!user.name) {
+        return <NeedLogin />
+    }
+
     return (
         <HomeContainer>
             {/* 다가오는 예약 섹션 */}
@@ -240,6 +298,36 @@ const ReservationCard = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    min-width: 24rem;
+    max-width: 24rem;
+    min-height: 7rem;
+`
+
+const ReservationCardSkeleton = styled.div`
+    position: relative;
+    background-color: #35376e;
+    color: white;
+    border-radius: 1rem;
+    padding: 3.2rem 2.8rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    min-width: 24rem;
+    height: 7rem;
+    animation: pulse 1.5s infinite ease-in-out;
+
+    @keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.9;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
 `
 
 const TitleLine = styled.div`
@@ -314,6 +402,33 @@ const CardImage = styled.img`
     object-fit: cover;
 `
 
+const CardImageSkeleton = styled.div`
+    width: 14rem;
+    height: 14rem;
+    border-radius: 8px;
+    background-color: #e6e6e6;
+    margin-bottom: 3rem;
+    animation: pulse 1.5s infinite ease-in-out;
+
+    @keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+        25% {
+            opacity: 0.8;
+        }
+        50% {
+            opacity: 0.6;
+        }
+        75% {
+            opacity: 0.8;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+`
+
 const CardName = styled.div`
     font-size: 1.6rem;
     font-weight: bold;
@@ -335,9 +450,7 @@ const CardDetail = styled.div`
 
 const InfoText = styled.span`
     font-size: 1.6rem;
-    background-color: rgba(53, 55, 110, 1);
-    color: #ffffff;
-    border: 0.1rem solid rgba(41, 41, 89, 1);
+    color: rgba(53, 55, 110, 1);
     border-radius: 0.8rem;
     padding: 3.2rem 2.8rem;
 `

@@ -10,11 +10,13 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 import MakeMeet from '../../components/makeMeet.tsx'
 
 function ReservationComponent() {
-    const [reservations, setReservations] = useState<IReservationFull[] | null>(null)
+    const [reservations, setReservations] = useState<IReservationFull[]>([])
     const [refetch, setRefetch] = useState<boolean>(false)
+    const [isLoading, setLoading] = useState<boolean>(true)
     const { getToken } = userStore()
     const token = getToken()
     useEffect(() => {
+        setLoading(true)
         fetch(`${VITE_SERVER_URL}/api/v1/reservation?size=20`, {
             method: 'GET',
             headers: {
@@ -32,6 +34,7 @@ function ReservationComponent() {
                     .filter(reservation => reservation.status === 'RESERVED' || reservation.status === 'CONFIRMED')
                     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
                 setReservations(result)
+                setLoading(false)
             })
     }, [token, refetch])
 
@@ -59,8 +62,18 @@ function ReservationComponent() {
         return formatting[new Date(date).getDay()]
     }
 
-    // 예약 데이터가 없으면 placeName이 빈 문자열이라 가정
-    if (!reservations) {
+    if (isLoading) {
+        return (
+            <PaymentContainer>
+                <ImageSkeleton />
+                <FormContainer>
+                    <InfoBoxSkeleton />
+                    <InfoBoxSkeleton />
+                    <InfoBoxSkeleton />
+                </FormContainer>
+            </PaymentContainer>
+        )
+    } else if (reservations.length === 0) {
         return (
             <NoReservationContainer>
                 <NoReservationText>예약하신 일정이 없습니다</NoReservationText>
@@ -161,6 +174,31 @@ const Image = styled.img`
     object-position: top;
 `
 
+const ImageSkeleton = styled.div`
+    width: 100%;
+    background-color: #e6e6e6;
+    height: 20rem;
+
+    animation: pulse 1.5s infinite ease-in-out;
+    @keyframes pulse {
+        0% {
+            opacity: 1;
+        }
+        25% {
+            opacity: 0.8;
+        }
+        50% {
+            opacity: 0.6;
+        }
+        75% {
+            opacity: 0.8;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+`
+
 const CountdownText = styled.div`
     font-size: 1.5rem;
     font-weight: bold;
@@ -190,6 +228,19 @@ const InfoBox = styled.div`
     font-size: 1.6rem;
     width: 85%;
     gap: 1.6rem;
+`
+
+const InfoBoxSkeleton = styled.div`
+    display: flex;
+    flex-direction: column;
+    border: 0.1rem solid rgba(217, 217, 217, 0.6);
+    border-radius: 1.2rem;
+    padding: 2rem 1.6rem;
+    background-color: #ffffff;
+    font-size: 1.6rem;
+    width: 85%;
+    gap: 1.6rem;
+    height: 7rem;
 `
 
 const InfoItem = styled.div`

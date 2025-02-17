@@ -45,7 +45,7 @@ function Search() {
         if (faceFilterSelected) {
             temp.meetingType = faceFilterSelected === '대면' ? 'OFFLINE' : faceFilterSelected === '비대면' ? 'ONLINE' : ''
         }
-        if (locationFilterSelected) {
+        if (locationFilterSelected && locationFilterSelected.id !== -1) {
             temp.regionId = locationFilterSelected.id
         }
         if (dateFilterSelected) {

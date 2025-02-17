@@ -21,19 +21,11 @@ function LocationFilter({ initialSelected, onConfirm }: LocationFilterProps) {
         queryFn: () => getRegions(getToken()),
     })
 
-    const handleBroadClick = (region: string) => {
-        setSelectedBroad(region)
-    }
-
-    const handleSubClick = (sub: IRegion) => {
-        setSelectedSubs(sub)
-    }
-
     return (
         <Container>
             <ColumnContainer>
                 <LeftColumn>
-                    <BroadRegionItem key={'서울'} selected={'서울' === selectedBroad} onClick={() => handleBroadClick('서울')}>
+                    <BroadRegionItem key={'서울'} selected={'서울' === selectedBroad} onClick={() => setSelectedBroad('서울')}>
                         {'서울'}
                     </BroadRegionItem>
                 </LeftColumn>
@@ -42,7 +34,13 @@ function LocationFilter({ initialSelected, onConfirm }: LocationFilterProps) {
                         <SubRegionItem
                             key={sub.id}
                             selected={selectedSubs !== null && selectedSubs.id === sub.id}
-                            onClick={() => handleSubClick(sub)}
+                            onClick={() => {
+                                if (selectedSubs !== null && selectedSubs.id === sub.id) {
+                                    setSelectedSubs(null)
+                                } else {
+                                    setSelectedSubs(sub)
+                                }
+                            }}
                         >
                             {sub.name}
                         </SubRegionItem>

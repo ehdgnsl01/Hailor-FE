@@ -31,7 +31,6 @@ function ReservationComponent() {
                 const res = data as {
                     reservations: IReservationFull[]
                 }
-                console.log(res)
                 const today = new Date()
                 const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getDate()}`
                 const time = today.getHours() * 60 + today.getMinutes()
@@ -44,7 +43,6 @@ function ReservationComponent() {
                                 (date === reservation.date && time <= (reservation.slot / 2 + 10) * 60 + (reservation.slot % 2 === 0 ? 0 : 30))),
                     )
                     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime() || a.slot - b.slot)
-                console.log(result)
                 setReservations(result)
                 setLoading(false)
             })
@@ -143,7 +141,7 @@ function ReservationComponent() {
                     )}
                     <InfoBox>
                         <GoogleOAuthProvider clientId={googleClientId}>
-                            <CancelReservation id={reservations[0].id} onClose={() => setRefetch(!refetch)} />
+                            <CancelReservation id={reservations[0].id} onClose={() => setRefetch(!refetch)} type={reservations[0].meetingType} />
                         </GoogleOAuthProvider>
                     </InfoBox>
                 </InfoBoxesContainer>

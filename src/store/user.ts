@@ -18,12 +18,12 @@ export const userStore = create<UserStore>((set, get) => ({
         name: '',
         role: '',
         exp: 0,
+        profileImage: '',
     },
     isRefresh: false,
     setToken: token => {
         const user: IUser = jwt.decode(token.accessToken) as IUser
         set({ user })
-
         // localStorage를 사용하여 토큰과 exp 저장
         localStorage.setItem('accessToken', token.accessToken)
         localStorage.setItem('refreshToken', token.refreshToken)

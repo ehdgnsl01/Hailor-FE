@@ -196,6 +196,7 @@ const FilterPanel = styled.div`
     padding: 1.6rem;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
     overflow-y: scroll;
+    margin-bottom: 6rem;
 `
 
 const PanelHeader = styled.div`

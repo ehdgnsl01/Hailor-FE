@@ -60,7 +60,7 @@ function MyPage() {
             {/*TODO: get user info*/}
             {user.name && (
                 <InfoContainer>
-                    <Profile src={'/윈터 사진.webp'} />
+                    <Profile src={user.profileImage} />
                     <Text>{user.name}</Text>
                 </InfoContainer>
             )}

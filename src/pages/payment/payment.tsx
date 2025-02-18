@@ -234,6 +234,8 @@ function Payment() {
                         onClick={(t: string) => {
                             setDate(date)
                             setType(t)
+                            setStep(1)
+                            setDate(new Date())
                         }}
                     />
                     {step > 0 && (
@@ -242,6 +244,7 @@ function Payment() {
                             hasInformation={true}
                             setDate={(t: Date) => {
                                 setTime(-1)
+                                setStep(2)
                                 setDate(t)
                             }}
                         />
@@ -254,6 +257,7 @@ function Payment() {
                             selected={timeSlot}
                             setTime={(t: number) => {
                                 setTime(t)
+                                setStep(3)
                             }}
                         />
                     )}

@@ -11,6 +11,7 @@ export interface IUser {
     name: string
     role: string
     exp: number
+    profileImage: string
 }
 
 export interface IToken {

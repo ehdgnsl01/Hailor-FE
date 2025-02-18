@@ -87,6 +87,14 @@ const CheckLabel = styled.label`
 const Wrapper = styled.div`
     width: 90%;
 `
+
+const Status = styled.span<{ need: boolean }>`
+    font-size: 1.4rem;
+    text-align: left;
+    color: ${props => (props.need ? 'rgba(255, 77, 77, 1)' : 'rgba(41, 41, 41, 0.6)')};
+    
+`
+
 function Register({ onClick, credential }: { onClick: () => void; credential: string }) {
     const [checks, setCheck] = useState<number>(0)
     const { setToken } = userStore()
@@ -128,7 +136,9 @@ function Register({ onClick, credential }: { onClick: () => void; credential: st
                         <CheckBox id={`${term.id}`} selected={(checks & (1 << term.id)) === 1 << term.id}>
                             ✔
                         </CheckBox>
-                        <CheckLabel htmlFor={`${term.id}`}>[{term.title}] 위 약관에 모두 동의합니다.</CheckLabel>
+                        <CheckLabel htmlFor={`${term.id}`}>
+                            [{term.title}]에 동의합니다. <Status need={term.isRequired}>{`(${term.isRequired ? '필수' : '선택'})`}</Status>
+                        </CheckLabel>
                     </CheckBoxContainer>
                 ))}
             </ContextBox>

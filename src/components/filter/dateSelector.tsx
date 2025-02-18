@@ -184,6 +184,8 @@ const dateConverter = ['일', '월', '화', '수', '목', '금', '토']
 
 function DateSelector({ date, hasInformation, setDate }: Props) {
     const minDate = new Date()
+    const maxDate = new Date()
+    maxDate.setMonth(minDate.getMonth() + 3)
     return (
         <Layout>
             {hasInformation && date ? (
@@ -198,6 +200,7 @@ function DateSelector({ date, hasInformation, setDate }: Props) {
                 value={date}
                 defaultActiveStartDate={minDate}
                 minDate={minDate}
+                maxDate={maxDate}
                 onChange={value => setDate(value as Date)}
                 calendarType="gregory"
                 defaultView="month"

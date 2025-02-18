@@ -14,7 +14,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ onSearch }) => {
 
     return (
         <Container>
-            <Input type="text" placeholder="디자이너, 헤어샵을 검색해 보세요." value={query} onChange={handleInputChange} />
+            <Input type="text" placeholder="디자이너를 검색해 보세요." value={query} onChange={handleInputChange} />
             <SearchIconButton onClick={() => onSearch(query)}>
                 <MagnifyingGlassIcon />
             </SearchIconButton>

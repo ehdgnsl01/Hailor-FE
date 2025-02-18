@@ -10,6 +10,7 @@ import { getHotDesigners } from '../../api/designer.ts'
 import { Designer } from '../../types/designer.ts'
 import { designerStore } from '../../store/designer.ts'
 import NeedLogin from '../../components/needLogin.tsx'
+import { Link } from 'react-router-dom'
 
 function Upcoming() {
     const [reservations, setReservations] = useState<IReservationFull[]>([])
@@ -42,11 +43,21 @@ function Upcoming() {
                     reservations: IReservationFull[]
                 }
                 console.log(res)
+                const today = new Date()
+                const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getDate()}`
+                const time = today.getHours() * 60 + today.getMinutes()
+
                 const result = res.reservations
-                    .filter(reservation => reservation.status === 'RESERVED' || reservation.status === 'CONFIRMED')
-                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                    .filter(
+                        reservation =>
+                            (reservation.status === 'RESERVED' || reservation.status === 'CONFIRMED') &&
+                            (date !== reservation.date ||
+                                (date === reservation.date && time <= (reservation.slot / 2 + 10) * 60 + (reservation.slot % 2 === 0 ? 0 : 30))),
+                    )
+                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime() || a.slot - b.slot)
+                console.log(result)
                 setReservations(result)
-                setTimeout(() => setLoading(false), 500)
+                setLoading(false)
             })
     }, [token])
 
@@ -117,7 +128,7 @@ function HotDesigner() {
             {data &&
                 data.designers.map(
                     (designer): React.ReactNode => (
-                        <StyledLink key={designer.id}>
+                        <StyledLink key={designer.id} to="/user/search/payment" onClick={() => designerStore.getState().setDesigner(designer)}>
                             <Card>
                                 <CardImage src={designer.profileImageURL} alt={designer.name} />
                                 <CardInfo>
@@ -283,7 +294,7 @@ const ReservationInfo = styled.div`
 `
 
 // Link 스타일 지정 (텍스트 데코레이션 제거, 컬러 상속)
-const StyledLink = styled.div`
+const StyledLink = styled(Link)`
     text-decoration: none;
     color: inherit;
 `
@@ -293,13 +304,12 @@ const ReservationCard = styled.div`
     background-color: #35376e;
     color: white;
     border-radius: 1rem;
-    padding: 3.2rem 2.8rem;
+    padding: 3.2rem 2.4rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 1rem;
     min-width: 24rem;
-    max-width: 24rem;
     min-height: 7rem;
 `
 
@@ -340,11 +350,11 @@ const InfoBox = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0 2rem;
+    padding: 0 3rem;
 `
 
 const InfoLine = styled.div`
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     padding: 0 1rem;
 `
 

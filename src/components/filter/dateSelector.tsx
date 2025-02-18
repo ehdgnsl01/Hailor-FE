@@ -29,7 +29,15 @@ const InfoText = styled.span`
     text-align: left;
 `
 
-const CustomCalender = styled(Calendar)`
+const CustomCalender = styled(Calendar).attrs({
+    tileClassName: ({ date, view }: { date: Date; view: string }) => {
+        // 월별 뷰에서 오늘 이전의 날짜이면 'past-date' 클래스를 추가합니다.
+        if (view === 'month' && date < new Date(new Date().setHours(0, 0, 0, 0))) {
+            return 'past-date'
+        }
+        return ''
+    },
+})`
     background-color: #ffffff;
     align-self: center;
     border: 0;
@@ -114,7 +122,7 @@ const CustomCalender = styled(Calendar)`
     }
 
     .react-calendar__tile {
-        border-radius: 500rem;
+        border-radius: 1rem;
         color: #4a5660;
         font-size: 2rem;
         width: 4rem;
@@ -141,8 +149,14 @@ const CustomCalender = styled(Calendar)`
         color: #4a5660;
     }
 
+    /* 지난 날짜 스타일 (추가) */
+    .past-date {
+        background-color: transparent !important;
+        color: rgb(74, 86, 96, 0.3) !important;
+    }
+
     .react-calendar__month-view__weekdays__weekday abbr {
-        color: #b5bec6;
+        color: #292929;
         font-weight: normal;
         text-decoration: none;
     }

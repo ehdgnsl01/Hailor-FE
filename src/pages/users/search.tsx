@@ -142,7 +142,7 @@ function Search() {
                     </FilterPanel>
                 </Overlay>
             )}
-            <ProfileListComponent filter={memoFilter} time={dateFilterSelected || new Date()} />
+            <ProfileListComponent filter={memoFilter} time={dateFilterSelected || new Date()} face={faceFilterSelected || ''} />
         </PageContainer>
     )
 }

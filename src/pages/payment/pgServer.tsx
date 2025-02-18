@@ -134,7 +134,7 @@ function PgServer() {
         let current = 10 * 60,
             index = 0
 
-        while (current <= 20 * 60) {
+        while (current < 20 * 60) {
             const hours = String(Math.floor(current / 60)).padStart(2, '0')
             const minutes = String(current % 60).padStart(2, '0')
             result.push({

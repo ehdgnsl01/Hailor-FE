@@ -8,6 +8,7 @@ import { googleClientId, VITE_SERVER_URL } from '../../config'
 import { IReservationFull } from '../../types/reservation.ts'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import MakeMeet from '../../components/makeMeet.tsx'
+import CancelReservation from '../../components/cancelReservation.tsx'
 
 function ReservationComponent() {
     const [reservations, setReservations] = useState<IReservationFull[]>([])
@@ -15,6 +16,7 @@ function ReservationComponent() {
     const [isLoading, setLoading] = useState<boolean>(true)
     const { getToken } = userStore()
     const token = getToken()
+
     useEffect(() => {
         setLoading(true)
         fetch(`${VITE_SERVER_URL}/api/v1/reservation?size=20`, {
@@ -30,9 +32,19 @@ function ReservationComponent() {
                     reservations: IReservationFull[]
                 }
                 console.log(res)
+                const today = new Date()
+                const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${today.getDate()}`
+                const time = today.getHours() * 60 + today.getMinutes()
+
                 const result = res.reservations
-                    .filter(reservation => reservation.status === 'RESERVED' || reservation.status === 'CONFIRMED')
-                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+                    .filter(
+                        reservation =>
+                            (reservation.status === 'RESERVED' || reservation.status === 'CONFIRMED') &&
+                            (date !== reservation.date ||
+                                (date === reservation.date && time <= (reservation.slot / 2 + 10) * 60 + (reservation.slot % 2 === 0 ? 0 : 30))),
+                    )
+                    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime() || a.slot - b.slot)
+                console.log(result)
                 setReservations(result)
                 setLoading(false)
             })
@@ -129,6 +141,11 @@ function ReservationComponent() {
                             )}
                         </InfoBox>
                     )}
+                    <InfoBox>
+                        <GoogleOAuthProvider clientId={googleClientId}>
+                            <CancelReservation id={reservations[0].id} onClose={() => setRefetch(!refetch)} />
+                        </GoogleOAuthProvider>
+                    </InfoBox>
                 </InfoBoxesContainer>
             </FormContainer>
         </PaymentContainer>
@@ -206,6 +223,10 @@ const CountdownText = styled.div`
     background-color: #35376e;
     padding: 0 1rem;
     border-radius: 5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 `
 
 const InfoBoxesContainer = styled.div`

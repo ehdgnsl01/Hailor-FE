@@ -24,34 +24,35 @@ export const userStore = create<UserStore>((set, get) => ({
         const user: IUser = jwt.decode(token.accessToken) as IUser
         set({ user })
 
-        sessionStorage.setItem('accessToken', token.accessToken)
-        sessionStorage.setItem('refreshToken', token.refreshToken)
-        sessionStorage.setItem('exp', `${user.exp}`)
+        // localStorage를 사용하여 토큰과 exp 저장
+        localStorage.setItem('accessToken', token.accessToken)
+        localStorage.setItem('refreshToken', token.refreshToken)
+        localStorage.setItem('exp', `${user.exp}`)
     },
     getToken: () => {
-        const exp = parseInt(sessionStorage.getItem('exp') || '0')
+        const exp = parseInt(localStorage.getItem('exp') || '0')
         if (!get().isRefresh && exp - Math.floor(Date.now() / 1000) < 1000) {
             set({ isRefresh: true })
-            fetch(`${VITE_SERVER_URL}/api/v1/auth/refresh?token=${sessionStorage.getItem('refreshToken')}`, {
+            fetch(`${VITE_SERVER_URL}/api/v1/auth/refresh?token=${localStorage.getItem('refreshToken')}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${sessionStorage.getItem('accessToken')}`,
+                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
             })
                 .then(response => response.json())
                 .then(data => {
                     console.log(data)
                     if (data.refreshToken) {
-                        sessionStorage.setItem('accessToken', data.accessToken)
-                        sessionStorage.setItem('refreshToken', data.refreshToken)
+                        localStorage.setItem('accessToken', data.accessToken)
+                        localStorage.setItem('refreshToken', data.refreshToken)
                         const user = jwt.decode(data.accessToken) as IUser
-                        sessionStorage.setItem('exp', `${user.exp}`)
+                        localStorage.setItem('exp', `${user.exp}`)
                     }
                 })
                 .finally(() => set({ isRefresh: false }))
         }
-        return sessionStorage.getItem('accessToken') || ''
+        return localStorage.getItem('accessToken') || ''
     },
-    getUser: () => (jwt.decode(sessionStorage.getItem('accessToken') || '') || {}) as IUser,
+    getUser: () => (jwt.decode(localStorage.getItem('accessToken') || '') || {}) as IUser,
 }))

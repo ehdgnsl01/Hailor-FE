@@ -103,14 +103,15 @@ const Image = styled.img`
 `
 
 function Payment() {
-    const { designer, date } = designerStore()
+    const { designer, date, face } = designerStore()
     const navigate = useNavigate()
     const { getToken } = userStore()
     const { setReservationId, setReservationType, setPaymentType } = paymentStore()
     const token = getToken()
+    const initialFace = face === '대면·비대면' ? '' : face
 
     const [step, setStep] = useState<number>(0)
-    const [selectedType, setType] = useState<string>('')
+    const [selectedType, setType] = useState<string>(initialFace)
     const [selectedDate, setDate] = useState<Date>(date)
     const [timeSlot, setTime] = useState<number>(-1)
     const [showDeposit, setShowDeposit] = useState<boolean>(false)
@@ -160,12 +161,38 @@ function Payment() {
         }
     }, [])
 
+    useEffect(() => {
+        const contentLayout = document.getElementById('content-layout')
+        if (contentLayout) {
+            if (showDeposit) {
+                contentLayout.style.overflow = 'scroll'
+            } else {
+                contentLayout.style.overflow = 'hidden'
+            }
+        }
+    }, [showDeposit])
+
+    // Payment 컴포넌트 내부에서 초기 선택 값에 따라 step을 자동 업데이트하도록 useEffect 추가
+    useEffect(() => {
+        if (selectedType == '') {
+            setStep(0)
+        } else if (selectedDate) {
+            // 이미 날짜가 있다면 최소 step 2로 설정
+            setStep(prev => Math.max(prev, 2))
+        } else if (timeSlot !== -1) {
+            // 이미 시간 슬롯이 선택되어 있다면 최소 step 3로 설정
+            setStep(prev => Math.max(prev, 3))
+        } else {
+            setStep(0)
+        }
+    }, [selectedType, selectedDate, timeSlot])
+
     const times: ITime[] = useMemo(() => {
         const result = []
         let current = 10 * 60,
             index = 0
 
-        while (current <= 20 * 60) {
+        while (current < 20 * 60) {
             const hours = String(Math.floor(current / 60)).padStart(2, '0')
             const minutes = String(current % 60).padStart(2, '0')
             result.push({
@@ -178,17 +205,6 @@ function Payment() {
         }
         return result
     }, [])
-
-    useEffect(() => {
-        const contentLayout = document.getElementById('content-layout')
-        if (contentLayout) {
-            if (showDeposit) {
-                contentLayout.style.overflow = 'scroll'
-            } else {
-                contentLayout.style.overflow = 'hidden'
-            }
-        }
-    }, [showDeposit])
 
     if (designer.name === '') {
         return <></>
@@ -216,7 +232,6 @@ function Payment() {
                         data={designer.meetingType.split('/')}
                         selected={selectedType}
                         onClick={(t: string) => {
-                            setStep(1)
                             setDate(date)
                             setType(t)
                         }}
@@ -226,7 +241,6 @@ function Payment() {
                             date={selectedDate}
                             hasInformation={true}
                             setDate={(t: Date) => {
-                                setStep(2)
                                 setTime(-1)
                                 setDate(t)
                             }}
@@ -239,7 +253,6 @@ function Payment() {
                             times={times}
                             selected={timeSlot}
                             setTime={(t: number) => {
-                                setStep(3)
                                 setTime(t)
                             }}
                         />

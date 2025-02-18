@@ -31,3 +31,16 @@ export async function getReservationRecent(size: number, token: string): Promise
     }
     return res.json()
 }
+
+export async function cancelReservation(reservationId: number, token: string): Promise<void> {
+    const res = await fetch(`${VITE_SERVER_URL}/api/v1/reservation/${reservationId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+    })
+    if (!res.ok) {
+        throw new Error('예약 취소에 실패했습니다.')
+    }
+}

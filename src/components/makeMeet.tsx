@@ -36,6 +36,7 @@ function MakeMeet({ id, onClose, pg_token }: { id: number; onClose: () => void; 
     const onClick = useGoogleLogin({
         scope: 'https://www.googleapis.com/auth/calendar.app.created https://www.googleapis.com/auth/calendar.calendarlist.readonly',
         onSuccess: codeResponse => {
+            console.log(codeResponse)
             if (pg_token !== '') {
                 fetch(`${VITE_SERVER_URL}/api/v1/payment/kakao-pay/confirm`, {
                     method: 'POST',

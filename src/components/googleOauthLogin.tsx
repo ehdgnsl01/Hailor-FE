@@ -84,6 +84,9 @@ const CheckLabel = styled.label`
     text-align: left;
 `
 
+const Wrapper = styled.div`
+    width: 90%;
+`
 function Register({ onClick, credential }: { onClick: () => void; credential: string }) {
     const [checks, setCheck] = useState<number>(0)
     const { setToken } = userStore()
@@ -176,33 +179,35 @@ function GoogleOauthLogin() {
     const { setToken } = userStore()
 
     return (
-        <GoogleOAuthProvider clientId={googleClientId}>
-            <GoogleLogin
-                theme={'outline'}
-                onSuccess={credentialResponse => {
-                    fetch(`${VITE_SERVER_URL}/api/v1/auth/login`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ token: credentialResponse.credential }),
-                    })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.accessToken) {
-                                setToken(data)
-                            } else {
-                                setShowModal(true)
-                                setCredential(credentialResponse.credential as string)
-                            }
+        <Wrapper>
+            <GoogleOAuthProvider clientId={googleClientId}>
+                <GoogleLogin
+                    theme={'outline'}
+                    onSuccess={credentialResponse => {
+                        fetch(`${VITE_SERVER_URL}/api/v1/auth/login`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ token: credentialResponse.credential }),
                         })
-                }}
-                onError={() => {
-                    console.log('Login Failed')
-                }}
-            />
-            {showModal && <Register onClick={() => setShowModal(false)} credential={credential} />}
-        </GoogleOAuthProvider>
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.accessToken) {
+                                    setToken(data)
+                                } else {
+                                    setShowModal(true)
+                                    setCredential(credentialResponse.credential as string)
+                                }
+                            })
+                    }}
+                    onError={() => {
+                        console.log('Login Failed')
+                    }}
+                />
+                {showModal && <Register onClick={() => setShowModal(false)} credential={credential} />}
+            </GoogleOAuthProvider>
+        </Wrapper>
     )
 }
 

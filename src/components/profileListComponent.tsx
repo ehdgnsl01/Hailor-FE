@@ -10,11 +10,12 @@ import { designerStore } from '../store/designer.ts'
 interface ProfileListComponentProps {
     filter: IGetDesignerListFilter
     time: Date
+    face: string
 }
 
-const ProfileListComponent: React.FC<ProfileListComponentProps> = ({ filter, time }) => {
+const ProfileListComponent: React.FC<ProfileListComponentProps> = ({ filter, time, face }) => {
     const { getToken } = userStore()
-    const { setDesigner, setDate } = designerStore()
+    const { setDesigner, setDate, setFace } = designerStore()
     const [showLoading, setShowLoading] = useState<boolean>(true)
     const navigate = useNavigate()
     const { data, isLoading } = useQuery({
@@ -55,8 +56,10 @@ const ProfileListComponent: React.FC<ProfileListComponentProps> = ({ filter, tim
                             key={designer.id}
                             onClick={() => {
                                 setDate(time)
+                                setFace(face)
                                 setDesigner(designer)
                                 console.log(time)
+                                console.log(face)
                                 navigate('payment')
                             }}
                         >

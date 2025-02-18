@@ -47,7 +47,7 @@ function LocationFilter({ initialSelected, onConfirm }: LocationFilterProps) {
                     ))}
                 </RightColumn>
             </ColumnContainer>
-            <ConfirmButton onClick={() => onConfirm(selectedSubs)}>{selectedSubs ? `${selectedSubs.name} 추가하기` : '전체지역 보기'}</ConfirmButton>
+            <ConfirmButton onClick={() => onConfirm(selectedSubs)}>{selectedSubs ? `${selectedSubs.name} 선택하기` : '전체지역 보기'}</ConfirmButton>
         </Container>
     )
 }

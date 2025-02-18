@@ -10,7 +10,6 @@ import { getHotDesigners } from '../../api/designer.ts'
 import { Designer } from '../../types/designer.ts'
 import { designerStore } from '../../store/designer.ts'
 import NeedLogin from '../../components/needLogin.tsx'
-import { Link } from 'react-router-dom'
 
 function Upcoming() {
     const [reservations, setReservations] = useState<IReservationFull[]>([])
@@ -99,10 +98,29 @@ function Upcoming() {
 function HotDesigner() {
     const { getToken } = userStore()
     const token = getToken()
+    const navigate = useNavigate()
+    const { setDesigner, setDate } = designerStore()
     const { data, isLoading } = useQuery({
         queryKey: ['hotDesigner'],
         queryFn: () => getHotDesigners(token),
     })
+
+    const onClick = (name: string) => {
+        fetch(`${VITE_SERVER_URL}/api/v1/designer?size=1&name=${name}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                const result = data as { designers: Designer[] }
+                setDesigner(result.designers[0])
+                setDate(new Date())
+            })
+        navigate('direct-reservation/payment')
+    }
 
     if (isLoading) {
         return (
@@ -128,18 +146,16 @@ function HotDesigner() {
             {data &&
                 data.designers.map(
                     (designer): React.ReactNode => (
-                        <StyledLink key={designer.id} to="/user/search/payment" onClick={() => designerStore.getState().setDesigner(designer)}>
-                            <Card>
-                                <CardImage src={designer.profileImageURL} alt={designer.name} />
-                                <CardInfo>
-                                    <CardName>{designer.name}</CardName>
-                                </CardInfo>
-                                <CardInfo>
-                                    <CardDetail>{designer.region}</CardDetail>
-                                    <CardDetail>{designer.specialization}</CardDetail>
-                                </CardInfo>
-                            </Card>
-                        </StyledLink>
+                        <Card key={designer.id} onClick={() => onClick(designer.name)}>
+                            <CardImage src={designer.profileImageURL} alt={designer.name} />
+                            <CardInfo>
+                                <CardName>{designer.name}</CardName>
+                            </CardInfo>
+                            <CardInfo>
+                                <CardDetail>{designer.region}</CardDetail>
+                                <CardDetail>{designer.specialization}</CardDetail>
+                            </CardInfo>
+                        </Card>
                     ),
                 )}
         </HorizontalScrollContainer>
@@ -291,12 +307,6 @@ const UpcomingReservationSection = styled.div`
 const ReservationInfo = styled.div`
     display: flex;
     justify-content: center;
-`
-
-// Link 스타일 지정 (텍스트 데코레이션 제거, 컬러 상속)
-const StyledLink = styled(Link)`
-    text-decoration: none;
-    color: inherit;
 `
 
 const ReservationCard = styled.div`

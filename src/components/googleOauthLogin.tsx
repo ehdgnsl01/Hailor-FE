@@ -92,7 +92,6 @@ const Status = styled.span<{ need: boolean }>`
     font-size: 1.4rem;
     text-align: left;
     color: ${props => (props.need ? 'rgba(255, 77, 77, 1)' : 'rgba(41, 41, 41, 0.6)')};
-    
 `
 
 function Register({ onClick, credential }: { onClick: () => void; credential: string }) {

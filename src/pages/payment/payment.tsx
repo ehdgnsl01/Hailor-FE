@@ -232,10 +232,8 @@ function Payment() {
                         data={designer.meetingType.split('/')}
                         selected={selectedType}
                         onClick={(t: string) => {
-                            setDate(date)
                             setType(t)
                             setStep(1)
-                            setDate(new Date())
                         }}
                     />
                     {step > 0 && (

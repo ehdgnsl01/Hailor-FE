@@ -3,7 +3,7 @@ import { VITE_SERVER_URL } from '../config'
 import { IGetDesignerList, IPostDesigner, IPostRegion } from '../types/designer.ts'
 
 export async function getReservations(token: string, size: number, lastId: number): Promise<IGetAdminReservations> {
-    const res = await fetch(`${VITE_SERVER_URL}/api/v1/admin/reservation?size=${size}&lastId=${lastId}`, {
+    const res = await fetch(`${VITE_SERVER_URL}/api/v1/admin/reservation?size=${size}${`${lastId === 0 ? '' : `&lastId=${lastId}`}`}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -54,7 +54,7 @@ export async function postReservationConfirm(request: IPostAdminReservationConfi
 }
 
 export async function getDesignersAdmin(token: string, size: number, lastId: number): Promise<IGetDesignerList> {
-    const res = await fetch(`${VITE_SERVER_URL}/api/v1/admin/designer?size=${size}&lastId=${lastId}`, {
+    const res = await fetch(`${VITE_SERVER_URL}/api/v1/admin/designer?size=${size}${`${lastId === 0 ? '' : `&lastId=${lastId}`}`}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

@@ -118,10 +118,12 @@ function ReservationComponent() {
                             <SubText>{`${10 + Math.floor(reservations[0].slot / 2)}:${String(reservations[0].slot % 2 === 0 ? 0 : 30).padStart(2, '0')}`}</SubText>
                             <SubText>·</SubText>
                             <SubText>{reservations[0].meetingType === 'ONLINE' ? '비대면' : '대면'}</SubText>
+                            <SubText>·</SubText>
+                            <SubText>{reservations[0].status === 'CONFIRMED' ? '예약확정' : '입금 확인 중'}</SubText>
                         </InfoItem>
                     </InfoBox>
                     {/* 박스 3: 상담 방식이 비대면이면 구글미트 링크 */}
-                    {reservations[0].meetingType === 'ONLINE' && (
+                    {reservations[0].status === 'CONFIRMED' && reservations[0].meetingType === 'ONLINE' && (
                         <InfoBox>
                             <InfoItem>
                                 <TitleText>비대면 링크</TitleText>

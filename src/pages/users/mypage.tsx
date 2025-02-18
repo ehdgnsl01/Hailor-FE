@@ -66,10 +66,12 @@ function MyPage() {
                 </InfoContainer>
             )}
             {user.name && (
-                <InfoContainer onClick={() => {
-                    localStorage.clear()
-                    navigate('/user/mypage')
-                }}>
+                <InfoContainer
+                    onClick={() => {
+                        localStorage.clear()
+                        navigate('/user/mypage')
+                    }}
+                >
                     <Text>로그아웃</Text>
                 </InfoContainer>
             )}

@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { userStore } from '../../store/user.ts'
-import { useQuery } from '@tanstack/react-query'
+import { useInfiniteQuery } from '@tanstack/react-query'
 import { getDesignersAdmin } from '../../api/admin.ts'
-import { Designer } from '../../types/designer.ts'
+import { useInView } from 'react-intersection-observer'
+import { IGetDesignerList } from '../../types/designer.ts'
 
 const Container = styled.div`
     padding: 2rem;
@@ -11,7 +12,7 @@ const Container = styled.div`
 
 const ListContainer = styled.div`
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     width: 100%;
     overflow-y: scroll;
     padding: 1.5rem 0;
@@ -104,48 +105,43 @@ const Image = styled.img`
     object-fit: cover;
 `
 
-const MAX_SIZE = 100
+const MAX_SIZE = 10
 
-function Designers({ size, current, setEnd }: { size: number; current: number; setEnd: (e: number) => void }) {
-    const [designers, setDesigners] = useState<Designer[]>([])
-    const [isLoading, setLoading] = useState<boolean>(false)
+function Designers() {
     const { getToken } = userStore()
     const token = getToken()
-    const { data, refetch } = useQuery({
-        queryKey: ['AdminDesigner', size, current],
-        queryFn: () => {
-            setLoading(true)
-            const data = getDesignersAdmin(token, size, current)
-            setTimeout(() => setLoading(false), 300)
-            return data
+    const { ref, inView } = useInView()
+
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<IGetDesignerList, Error>({
+        queryKey: ['AdminDesigner', token],
+        queryFn: ({ pageParam }) => getDesignersAdmin(token, MAX_SIZE, pageParam as number),
+        initialPageParam: 0,
+        getNextPageParam: (lastPage, allPages) => {
+            if (lastPage && lastPage.designers.length < MAX_SIZE) {
+                return undefined
+            }
+
+            const lastId = lastPage.designers[lastPage.designers.length - 1]?.id
+            const prevLastId = allPages.length > 1 ? allPages[allPages.length - 2].designers.at(-1)?.id : null
+
+            if (lastId === prevLastId) {
+                return undefined
+            }
+
+            return lastId
         },
         enabled: !!token,
-        staleTime: 1000 * 60 * 0.5,
-        gcTime: 1000 * 60 * 0.5,
+        staleTime: 0,
+        gcTime: 0,
     })
 
     useEffect(() => {
-        if (data) {
-            if (designers.length === 0) {
-                setDesigners(data.designers)
-            } else {
-                let i = 0
-                const result: Designer[] = []
-                for (i = 0; i < data.designers.length; i++) {
-                    if (!designers.some(before => before.id === data.designers[0].id)) {
-                        result.push(data.designers[i])
-                    }
-                }
-                if (result.length === 0) {
-                    setEnd(current)
-                } else {
-                    setDesigners(result)
-                }
-            }
+        if (inView && hasNextPage) {
+            fetchNextPage()
         }
-    }, [data, refetch])
+    }, [inView, hasNextPage, fetchNextPage])
 
-    if (isLoading) {
+    if (isLoading && !data) {
         return (
             <ListContainer>
                 <ContentSkeleton />
@@ -160,40 +156,45 @@ function Designers({ size, current, setEnd }: { size: number; current: number; s
 
     return (
         <ListContainer>
-            {designers.length > 0 &&
-                designers.map(
-                    (designer): React.ReactNode => (
-                        <ContentBox>
-                            <SubContentBox>
-                                <Image src={designer.profileImageURL} />
-                            </SubContentBox>
-                            <SubContentBox>
-                                <ContentText>
-                                    <SubTitle>ID:</SubTitle> {designer.id}
-                                </ContentText>
-                                <ContentText>
-                                    <SubTitle>이름:</SubTitle> {designer.name}
-                                </ContentText>
-                                <ContentText>
-                                    <SubTitle>지역:</SubTitle> {designer.region}
-                                </ContentText>
-                                <ContentText>
-                                    <SubTitle>샵주소:</SubTitle> {designer.shopAddress}
-                                </ContentText>
-                                <ContentText>
-                                    <SubTitle>전문분야:</SubTitle> {designer.specialization}
-                                </ContentText>
-                                <ContentText>
-                                    <SubTitle>가능한 컨설팅:</SubTitle> {designer.meetingType}
-                                </ContentText>
-                                <ContentText>
-                                    <SubTitle>대면:</SubTitle> {designer.onlinePrice}원 <SubTitle>비대면:</SubTitle> {designer.offlinePrice}원
-                                </ContentText>
-                                <Descriptions>{designer.description}</Descriptions>
-                            </SubContentBox>
-                        </ContentBox>
+            {data &&
+                data.pages.map((page, pageIndex) =>
+                    page.designers.map(
+                        (designer): React.ReactNode => (
+                            <ContentBox key={`${pageIndex}-${designer.id}`}>
+                                <SubContentBox>
+                                    <Image src={designer.profileImageURL} />
+                                </SubContentBox>
+                                <SubContentBox>
+                                    <ContentText>
+                                        <SubTitle>ID:</SubTitle> {designer.id}
+                                    </ContentText>
+                                    <ContentText>
+                                        <SubTitle>이름:</SubTitle> {designer.name}
+                                    </ContentText>
+                                    <ContentText>
+                                        <SubTitle>지역:</SubTitle> {designer.region}
+                                    </ContentText>
+                                    <ContentText>
+                                        <SubTitle>샵주소:</SubTitle> {designer.shopAddress}
+                                    </ContentText>
+                                    <ContentText>
+                                        <SubTitle>전문분야:</SubTitle> {designer.specialization}
+                                    </ContentText>
+                                    <ContentText>
+                                        <SubTitle>가능한 컨설팅:</SubTitle> {designer.meetingType}
+                                    </ContentText>
+                                    <ContentText>
+                                        <SubTitle>대면:</SubTitle> {designer.onlinePrice}원 <SubTitle>비대면:</SubTitle> {designer.offlinePrice}원
+                                    </ContentText>
+                                    <Descriptions>{designer.description}</Descriptions>
+                                </SubContentBox>
+                            </ContentBox>
+                        ),
                     ),
                 )}
+            <div ref={ref} style={{ height: '1px', background: 'transparent' }}></div>
+
+            {isFetchingNextPage && <ContentSkeleton />}
         </ListContainer>
     )
 }
@@ -226,7 +227,7 @@ const DesignerList: React.FC = () => {
                     다음 페이지
                 </Button>
             </ButtonContainer>*/}
-            <Designers size={MAX_SIZE} current={MAX_SIZE + 1} setEnd={(e: number) => console.log(e)} />
+            <Designers />
             {/*<ButtonContainer>
                 <Button
                     none={current === MAX_SIZE + 1}

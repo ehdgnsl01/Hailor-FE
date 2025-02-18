@@ -22,6 +22,7 @@ const InfoContainer = styled.div`
     padding: 1.2rem 1.6rem;
     gap: 0.8rem;
     width: 85%;
+    margin-top: 2rem;
 `
 
 const AdminNavigate = styled.div`
@@ -62,6 +63,14 @@ function MyPage() {
                 <InfoContainer>
                     <Profile src={user.profileImage} />
                     <Text>{user.name}</Text>
+                </InfoContainer>
+            )}
+            {user.name && (
+                <InfoContainer onClick={() => {
+                    localStorage.clear()
+                    navigate('/user/mypage')
+                }}>
+                    <Text>로그아웃</Text>
                 </InfoContainer>
             )}
             {user.role === 'ADMIN' && (

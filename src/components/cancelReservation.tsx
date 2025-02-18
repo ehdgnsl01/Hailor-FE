@@ -113,6 +113,9 @@ function CancelReservation({ id, onClose, type }: { id: number; onClose: () => v
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
+                body: JSON.stringify({
+                    googleAccessToken: 'string',
+                }),
             }).then(() => onClose())
         }
     }

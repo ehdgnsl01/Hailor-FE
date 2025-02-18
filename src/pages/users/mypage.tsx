@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import GoogleOauthLogin from '../../components/googleOauthLogin.tsx'
 import { userStore } from '../../store/user.ts'
+import { useNavigate } from 'react-router-dom'
 
 const MyPageLayout = styled.div`
     display: flex;
@@ -23,6 +24,20 @@ const InfoContainer = styled.div`
     width: 85%;
 `
 
+const AdminNavigate = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    background-color: #ffffff;
+    border: 0.1rem solid rgba(217, 217, 217, 0.6);
+    border-radius: 1.2rem;
+    padding: 1.2rem 1.6rem;
+    margin: 2rem 0;
+    gap: 0.8rem;
+    width: 85%;
+`
+
 const Profile = styled.img`
     border-radius: 50rem;
     width: 3.2rem;
@@ -37,6 +52,7 @@ const Text = styled.span`
 function MyPage() {
     const { getUser } = userStore()
     const user = getUser()
+    const navigate = useNavigate()
 
     return (
         <MyPageLayout>
@@ -47,6 +63,11 @@ function MyPage() {
                     <Profile src={'/윈터 사진.webp'} />
                     <Text>{user.name}</Text>
                 </InfoContainer>
+            )}
+            {user.role === 'ADMIN' && (
+                <AdminNavigate onClick={() => navigate('/admin')}>
+                    <Text>admin 페이지로 이동하기</Text>
+                </AdminNavigate>
             )}
         </MyPageLayout>
     )

@@ -1,7 +1,9 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import Header from '../../components/header'
 import Navigation from '../../components/navigation'
 import styled from 'styled-components'
+import { userStore } from '../../store/user.ts'
+import { useEffect } from 'react'
 
 const MainLayout = styled.div`
     display: flex;
@@ -18,6 +20,18 @@ const ContentLayout = styled.div`
 `
 
 function Admin() {
+    const { getUser } = userStore()
+    const user = getUser()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        if (!user.role) {
+            navigate('/user/mypage')
+        } else if (user.role !== 'ADMIN') {
+            navigate('/user')
+        }
+    }, [user, navigate])
+
     return (
         <MainLayout>
             <Header role="admin" />

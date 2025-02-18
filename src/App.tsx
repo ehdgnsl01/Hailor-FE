@@ -14,7 +14,7 @@ import Main from './pages/main.tsx'
 import Payment from './pages/payment/payment.tsx'
 import PgServer from './pages/payment/pgServer.tsx'
 import NotFound from './pages/notFound.tsx'
-import PaymentConfirmation from './pages/admin/paymentConfirmation.tsx'
+import AddDesigner from './pages/admin/addDesigner.tsx'
 import DesignerList from './pages/admin/designerList.tsx'
 import ReservationList from './pages/admin/reservationList.tsx'
 
@@ -64,8 +64,8 @@ function App() {
                         </Route>
                         <Route path="admin" element={<Admin />}>
                             <Route index element={<ReservationList />} />
-                            <Route path="designerlist" element={<DesignerList />} />
-                            <Route path="paymentconfirmation" element={<PaymentConfirmation />} />
+                            <Route path="designer-list" element={<DesignerList />} />
+                            <Route path="designer-add" element={<AddDesigner />} />
                         </Route>
                         <Route path="*" element={<NotFound />} />
                     </Routes>

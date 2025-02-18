@@ -20,8 +20,38 @@ export interface IReservationFull {
     designer: Designer
 }
 
+export interface IAdminReservation extends IReservationFull {
+    user: {
+        id: number
+        name: string
+        email: string
+    }
+}
+
 export interface IPostReservation {
     body: IReservation
+    secret: {
+        token: string
+    }
+}
+
+export interface IGetAdminReservations {
+    reservations: IAdminReservation[]
+}
+
+export interface IPostAdminReservationRefund {
+    uri: {
+        id: number
+    }
+    secret: {
+        token: string
+    }
+}
+
+export interface IPostAdminReservationConfirm {
+    uri: {
+        id: number
+    }
     secret: {
         token: string
     }

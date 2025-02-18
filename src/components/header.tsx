@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { useNavigate } from 'react-router-dom'
 
 interface HeaderProps {
     role?: 'admin' | 'user'
@@ -24,6 +25,12 @@ const HeaderContent = styled.div`
     padding: 0.4rem 0;
 `
 
+const AdminContext = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+`
+
 const GradientText = styled.span`
     font-weight: 500;
     font-style: italic;
@@ -41,12 +48,29 @@ const AdminTag = styled.span`
     margin-left: 0.5rem;
 `
 
+const BackToUser = styled.div`
+    position: absolute;
+    right: 1rem;
+    top: 0.6rem;
+    font-size: 1.2rem;
+    background-color: #e6e6e6;
+    border-radius: 1.2rem;
+    color: rgba(41, 41, 89, 1);
+    padding: 1rem 2rem;
+`
+
 function Header({ role }: HeaderProps) {
+    const navigate = useNavigate()
     return (
         <HeaderLayout>
             <HeaderContent>
                 <GradientText>Hailor</GradientText>
-                {role === 'admin' && <AdminTag>Admin</AdminTag>}
+                {role === 'admin' && (
+                    <AdminContext>
+                        <AdminTag>Admin</AdminTag>
+                        <BackToUser onClick={() => navigate('/user/mypage')}>나가기</BackToUser>
+                    </AdminContext>
+                )}
             </HeaderContent>
         </HeaderLayout>
     )

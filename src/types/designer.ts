@@ -38,3 +38,31 @@ export interface IGetDesignerScheduleResponse {
         slot: number[]
     }
 }
+
+export interface IPostDesigner {
+    body: {
+        request: {
+            name: string
+            regionId: number
+            meetingType: string
+            shopAddress: string
+            specialization: string
+            offlinePrice: number
+            onlinePrice: number
+            description: string
+        }
+        profileImage: File
+    }
+    secret: {
+        token: string
+    }
+}
+
+export interface IPostRegion {
+    body: {
+        name: string
+    }
+    secret: {
+        token: string
+    }
+}

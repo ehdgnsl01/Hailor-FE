@@ -17,7 +17,8 @@ const ModalLayout = styled.div`
     left: 0;
     background: rgba(41, 41, 41, 0.8);
     width: 100%;
-    height: calc(var(--vh, 1vh) * 100 - 5rem);
+    min-height: calc(var(--vh, 1vh) * 100 - 5rem);
+    max-height: calc(var(--vh, 1vh) * 100 - 5rem);
     display: flex;
     align-items: center;
     justify-items: center;
@@ -147,12 +148,12 @@ function DepositModal({ price, onClose, onSuccess }: Props) {
                     <Text>농협</Text>
                 </Rows>
                 <Rows last={false}>
-                    <Label>계좌번호</Label>
-                    <Text>1234-5678-9010</Text>
+                    <Label>송금금액</Label>
+                    <Text>{price.toLocaleString()}원</Text>
                 </Rows>
                 <Rows last={true}>
-                    <Label>송금금액</Label>
-                    <Text>{price}원</Text>
+                    <Label>계좌번호</Label>
+                    <Text>1234-5678-9010</Text>
                 </Rows>
             </ContentContainer>
             <ButtonContainer>

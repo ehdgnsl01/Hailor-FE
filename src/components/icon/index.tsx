@@ -112,3 +112,20 @@ export const DangerIcon: React.FC<IconProps> = ({ width = '5rem', height = '5rem
         <line x1="12" y1="17" x2="12.01" y2="17" />
     </svg>
 )
+
+export function CheckIcon({ width, height, fill }: IconProps) {
+    return (
+        <svg
+            width={width}
+            height={height}
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            strokeWidth="0.5rem"
+            stroke={fill}
+            className="size-6"
+        >
+            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+        </svg>
+    )
+}

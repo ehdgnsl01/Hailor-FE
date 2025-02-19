@@ -20,6 +20,7 @@ const Modal = styled.div`
     padding: 2.4rem 3.2rem;
     border-radius: 1.6rem;
     min-width: 50%;
+    max-width: 70%;
 `
 
 const ContentContainer = styled.div`

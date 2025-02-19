@@ -292,7 +292,7 @@ function Payment() {
             </PaymentContainer>
             {showDeposit && (
                 <DepositModal
-                    price={23000}
+                    price={selectedType === '대면' ? designer.offlinePrice : designer.onlinePrice}
                     onClose={() => {
                         setShowDeposit(false)
                         navigate('/user')

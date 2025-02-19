@@ -31,7 +31,7 @@ export const userStore = create<UserStore>((set, get) => ({
     },
     getToken: () => {
         const exp = parseInt(localStorage.getItem('exp') || '0')
-        if (!get().isRefresh && exp - Math.floor(Date.now() / 1000) < 1000) {
+        if (!get().isRefresh && Math.floor(Date.now() / 1000) >= exp - 60) {
             set({ isRefresh: true })
             fetch(`${VITE_SERVER_URL}/api/v1/auth/refresh?token=${localStorage.getItem('refreshToken')}`, {
                 method: 'GET',
@@ -44,9 +44,9 @@ export const userStore = create<UserStore>((set, get) => ({
                 .then(data => {
                     console.log(data)
                     if (data.refreshToken) {
+                        const user = jwt.decode(data.accessToken) as IUser
                         localStorage.setItem('accessToken', data.accessToken)
                         localStorage.setItem('refreshToken', data.refreshToken)
-                        const user = jwt.decode(data.accessToken) as IUser
                         localStorage.setItem('exp', `${user.exp}`)
                     }
                 })

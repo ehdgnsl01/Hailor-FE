@@ -184,7 +184,8 @@ function Designers() {
                                         <SubTitle>가능한 컨설팅:</SubTitle> {designer.meetingType}
                                     </ContentText>
                                     <ContentText>
-                                        <SubTitle>대면:</SubTitle> {designer.onlinePrice}원 <SubTitle>비대면:</SubTitle> {designer.offlinePrice}원
+                                        <SubTitle>대면:</SubTitle> {designer.onlinePrice.toLocaleString()}원 <SubTitle>비대면:</SubTitle>{' '}
+                                        {designer.offlinePrice.toLocaleString()}원
                                     </ContentText>
                                     <Descriptions>{designer.description}</Descriptions>
                                 </SubContentBox>

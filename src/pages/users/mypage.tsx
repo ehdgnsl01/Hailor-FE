@@ -9,6 +9,7 @@ const MyPageLayout = styled.div`
     align-items: center;
     width: 100%;
     padding-top: 2rem;
+    gap: 2rem;
 `
 
 const InfoContainer = styled.div`
@@ -22,7 +23,6 @@ const InfoContainer = styled.div`
     padding: 1.2rem 1.6rem;
     gap: 0.8rem;
     width: 85%;
-    margin-top: 2rem;
 `
 
 const AdminNavigate = styled.div`
@@ -34,7 +34,6 @@ const AdminNavigate = styled.div`
     border: 0.1rem solid rgba(217, 217, 217, 0.6);
     border-radius: 1.2rem;
     padding: 1.2rem 1.6rem;
-    margin: 2rem 0;
     gap: 0.8rem;
     width: 85%;
 `

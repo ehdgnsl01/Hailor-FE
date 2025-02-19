@@ -44,7 +44,7 @@ function ReservationComponent() {
                     )
                     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime() || a.slot - b.slot)
                 setReservations(result)
-                setLoading(false)
+                setTimeout(() => setLoading(false), 500)
             })
     }, [token, refetch])
 

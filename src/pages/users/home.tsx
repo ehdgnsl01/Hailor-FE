@@ -56,7 +56,7 @@ function Upcoming() {
                     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime() || a.slot - b.slot)
                 console.log(result)
                 setReservations(result)
-                setLoading(false)
+                setTimeout(() => setLoading(false), 500)
             })
     }, [token])
 

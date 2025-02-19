@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { useInfiniteQuery, useMutation } from '@tanstack/react-query'
+import { InfiniteData, QueryObserverResult, RefetchOptions, useInfiniteQuery, useMutation } from '@tanstack/react-query'
 import { useInView } from 'react-intersection-observer'
 import { getReservations, postReservationConfirm, postReservationRefund } from '../../api/admin.ts'
 import { userStore } from '../../store/user.ts'
 import { IGetAdminReservations, IPostAdminReservationConfirm, IPostAdminReservationRefund } from '../../types/reservation.ts'
+import { CrossIcon } from '../../components/icon'
+import SelectButton from '../../components/buttons/selectButton.tsx'
 
 const Container = styled.div`
     padding: 2rem;
@@ -123,11 +125,136 @@ const SubTitle = styled.span`
 `
 
 const MAX_SIZE = 10
+type StatusType = "RESERVED" | "CONFIRMED" | "FINISHED" | "CANCELED" | "NEED_REFUND" | "REFUNDED"
+const mapStatus: Record<StatusType, string> = {
+    RESERVED: '예약(미결제)',
+    CONFIRMED: '결제 완료',
+    FINISHED: '종료',
+    CANCELED: '취소',
+    NEED_REFUND: '환불 요청',
+    REFUNDED: '환불 완료',
+}
+
+const ModalLayout = styled.div<{ top: string; left: string }>`
+    position: absolute;
+    top: ${props => props.top};
+    left: ${props => props.left};
+    background: rgba(41, 41, 41, 0.8);
+    width: 100%;
+    height: calc(var(--vh, 1vh) * 100);
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    z-index: 500;
+`
+
+const Modal = styled.div`
+    background-color: #fafcfe;
+    padding: 2.4rem 3.2rem 0 3.2rem;
+    border-radius: 1.6rem;
+    min-width: 50%;
+    max-width: 70%;
+`
+
+const ModalContentContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2.4rem;
+`
+
+const ButtonContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    margin-top: 3rem;
+`
+
+const BackButtonContainer = styled.div`
+    display: flex;
+    justify-content: end;
+`
+
+const Label = styled.label`
+    font-size: 1.6rem;
+    font-weight: bold;
+`
+
+function RefundModal({
+    refetch,
+    closeModal,
+    id,
+    isOpen,
+}: {
+    refetch: (options?: RefetchOptions) => Promise<QueryObserverResult<InfiniteData<IGetAdminReservations>, Error>>
+    closeModal: () => void
+    id: number
+    isOpen: boolean
+}) {
+    const [position, setPosition] = useState('0')
+    const { getToken } = userStore()
+    const token = getToken()
+    const refund = useMutation({
+        mutationKey: ['reservationRefund', 'admin'],
+        mutationFn: (request: IPostAdminReservationRefund) => postReservationRefund(request),
+        onSuccess: async () => {
+            await refetch()
+        },
+    })
+
+    useEffect(() => {
+        if (isOpen) {
+            setPosition(`${window.scrollY}px`)
+            const originalOverflow = document.body.style.overflow
+            document.body.style.overflow = 'hidden'
+            return () => {
+                document.body.style.overflow = originalOverflow
+            }
+        }
+    }, [isOpen])
+
+    return (
+        <ModalLayout top={position} left={'0'}>
+            <Modal>
+                <BackButtonContainer onClick={closeModal}>
+                    <CrossIcon width={'2rem'} height={'2rem'} fill={'#292929'} />
+                </BackButtonContainer>
+                <ModalContentContainer>
+                    <ButtonContainer>
+                        <Label>환불 승인하기</Label>
+                        <SelectButton
+                            text1={'아니오'}
+                            text2={'예'}
+                            onClick1={closeModal}
+                            onClick2={() => {
+                                const request: IPostAdminReservationRefund = {
+                                    uri: {
+                                        id: id,
+                                    },
+                                    secret: {
+                                        token: token,
+                                    },
+                                }
+                                refund.mutate(request)
+                                closeModal()
+                            }}
+                        />
+                    </ButtonContainer>
+                </ModalContentContainer>
+            </Modal>
+        </ModalLayout>
+    )
+}
 
 function Reservations() {
     const { getToken } = userStore()
     const token = getToken()
     const { ref, inView } = useInView()
+    const [showModal, setShowModal] = useState<boolean>(false)
+    const [refundId, setRefundId] = useState<number>(-1)
 
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch, isLoading } = useInfiniteQuery<IGetAdminReservations, Error>({
         queryKey: ['AdminReservations', token],
@@ -158,14 +285,6 @@ function Reservations() {
         }
     }, [inView, hasNextPage, fetchNextPage])
 
-    const refund = useMutation({
-        mutationKey: ['reservationRefund', 'admin'],
-        mutationFn: (request: IPostAdminReservationRefund) => postReservationRefund(request),
-        onSuccess: async () => {
-            await refetch()
-        },
-    })
-
     const confirm = useMutation({
         mutationKey: ['reservationConfirm', 'admin'],
         mutationFn: (request: IPostAdminReservationConfirm) => postReservationConfirm(request),
@@ -189,6 +308,7 @@ function Reservations() {
 
     return (
         <ListContainer>
+            {showModal && <RefundModal refetch={refetch} closeModal={() => setShowModal(false)} id={refundId} isOpen={showModal} />}
             {data &&
                 data.pages.map((page, pageIndex) =>
                     page.reservations.map(
@@ -206,7 +326,7 @@ function Reservations() {
                                         {`${Math.floor(res.slot / 2) + 10}:${String(res.slot % 2 === 0 ? 0 : 30).padStart(2, '0')}`}
                                     </ContentText>
                                     <ContentText>
-                                        <SubTitle>예약금:</SubTitle> {res.price}원
+                                        <SubTitle>예약금:</SubTitle> {res.price.toLocaleString()}원
                                     </ContentText>
                                     <ContentText>
                                         <SubTitle>결제:</SubTitle> {`${res.paymentMethod === 'KAKAO_PAY' ? '카카오페이' : '계좌이체'}`}
@@ -215,7 +335,7 @@ function Reservations() {
                                         <SubTitle>타입:</SubTitle> {res.meetingType === 'ONLINE' ? '비대면' : '대면'}
                                     </ContentText>
                                     <ContentText>
-                                        <SubTitle>상태:</SubTitle> <Status>{res.status}</Status>
+                                        <SubTitle>상태:</SubTitle> <Status>{mapStatus[res.status as StatusType]}</Status>
                                     </ContentText>
                                 </SubContentBox>
                                 <SubContentBox>
@@ -246,15 +366,8 @@ function Reservations() {
                                 {res.status === 'NEED_REFUND' && (
                                     <ChangeStatusButton
                                         onClick={() => {
-                                            const request: IPostAdminReservationRefund = {
-                                                uri: {
-                                                    id: res.id,
-                                                },
-                                                secret: {
-                                                    token: token,
-                                                },
-                                            }
-                                            refund.mutate(request)
+                                            setRefundId(res.id)
+                                            setShowModal(true)
                                         }}
                                     >
                                         환불하기
@@ -290,7 +403,6 @@ function Reservations() {
 const ReservationList: React.FC = () => {
     //const [current, setCurrent] = useState<number>(MAX_SIZE + 1)
     //const [end, setEnd] = useState<number | null >(null)
-
     return (
         <Container>
             {/*<ButtonContainer>

@@ -6,6 +6,8 @@ import { useSuspenseQuery } from '@tanstack/react-query'
 import { googleClientId, VITE_SERVER_URL } from '../config'
 import { getRegisterTerm } from '../api/users.ts'
 import { userStore } from '../store/user.ts'
+import { CheckIcon } from './icon'
+import { useNavigate } from 'react-router-dom'
 
 const Modal = styled.div`
     position: absolute;
@@ -29,15 +31,25 @@ const ContextBox = styled.div`
     gap: 1rem;
 `
 
-const Button = styled.div`
+const Button = styled.button`
     background-color: #35376e;
     color: #ffffff;
     border: 0.1rem solid #292929;
     border-radius: 50rem;
     font-size: 1.6rem;
     font-weight: bold;
-    padding: 1.2rem 2.4rem;
-    margin: 1.6rem 16rem;
+    padding: 1.2rem 3rem;
+    margin: 1.6rem 0;
+    cursor: pointer;
+
+    &:disabled {
+        background: #ccc;
+        border: 0.1rem solid #e6e6e6;
+        cursor: not-allowed;
+    }
+    &:hover:enabled {
+        background: rgba(41, 41, 89, 1);
+    }
 `
 
 const CheckBoxContainer = styled.div`
@@ -76,7 +88,6 @@ const CheckBox = styled.div<{ selected: boolean }>`
     border-radius: 0.6rem;
     width: 2rem;
     height: 2rem;
-    color: ${props => (props.selected ? '#62A87C' : '#FFFFFF')} !important;
 `
 
 const CheckLabel = styled.label`
@@ -86,6 +97,9 @@ const CheckLabel = styled.label`
 
 const Wrapper = styled.div`
     width: 90%;
+    align-items: center;
+    justify-content: center;
+    justify-self: center;
 `
 
 const Status = styled.span<{ need: boolean }>`
@@ -97,9 +111,14 @@ const Status = styled.span<{ need: boolean }>`
 function Register({ onClick, credential }: { onClick: () => void; credential: string }) {
     const [checks, setCheck] = useState<number>(0)
     const { setToken } = userStore()
+    const navigate = useNavigate()
     const { data } = useSuspenseQuery({
         queryKey: ['registerTerm'],
-        queryFn: () => getRegisterTerm(),
+        queryFn: async () => {
+            const data = await getRegisterTerm()
+            data.terms.sort((a, b) => Number(b.isRequired) - Number(a.isRequired))
+            return data
+        },
     })
 
     const minRule = useMemo(() => {
@@ -133,7 +152,11 @@ function Register({ onClick, credential }: { onClick: () => void; credential: st
                 {data.terms.map(term => (
                     <CheckBoxContainer onClick={() => checkClick(term.id)}>
                         <CheckBox id={`${term.id}`} selected={(checks & (1 << term.id)) === 1 << term.id}>
-                            ✔
+                            <CheckIcon
+                                width="1.2rem"
+                                height="1.2rem"
+                                fill={`${(checks & (1 << term.id)) === 1 << term.id ? '#62A87C' : '#FFFFFF'}`}
+                            />
                         </CheckBox>
                         <CheckLabel htmlFor={`${term.id}`}>
                             [{term.title}]에 동의합니다. <Status need={term.isRequired}>{`(${term.isRequired ? '필수' : '선택'})`}</Status>
@@ -142,6 +165,8 @@ function Register({ onClick, credential }: { onClick: () => void; credential: st
                 ))}
             </ContextBox>
             <Button
+                type="button"
+                disabled={(checks & minRule) !== minRule}
                 onClick={() => {
                     if ((checks & minRule) === minRule) {
                         const agreedTerms = checks
@@ -171,6 +196,7 @@ function Register({ onClick, credential }: { onClick: () => void; credential: st
                                     .then(data => {
                                         setToken(data)
                                         onClick()
+                                        navigate('/user/mypage')
                                     })
                             })
                     }
@@ -188,8 +214,8 @@ function GoogleOauthLogin() {
     const { setToken } = userStore()
 
     return (
-        <Wrapper>
-            <GoogleOAuthProvider clientId={googleClientId}>
+        <GoogleOAuthProvider clientId={googleClientId}>
+            <Wrapper>
                 <GoogleLogin
                     theme={'outline'}
                     onSuccess={credentialResponse => {
@@ -214,9 +240,9 @@ function GoogleOauthLogin() {
                         console.log('Login Failed')
                     }}
                 />
-                {showModal && <Register onClick={() => setShowModal(false)} credential={credential} />}
-            </GoogleOAuthProvider>
-        </Wrapper>
+            </Wrapper>
+            {showModal && <Register onClick={() => setShowModal(false)} credential={credential} />}
+        </GoogleOAuthProvider>
     )
 }
 

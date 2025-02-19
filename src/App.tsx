@@ -3,6 +3,7 @@ import './App.css'
 import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
 import styled from 'styled-components'
 import User from './pages/users/user.tsx'
 import Admin from './pages/admin/admin.tsx'

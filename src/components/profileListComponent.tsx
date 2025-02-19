@@ -173,7 +173,7 @@ const NameBox = styled.div`
 `
 
 const Name = styled.h3`
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: bold;
     margin: 0;
 `

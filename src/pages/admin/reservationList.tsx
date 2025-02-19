@@ -125,7 +125,7 @@ const SubTitle = styled.span`
 `
 
 const MAX_SIZE = 10
-type StatusType = "RESERVED" | "CONFIRMED" | "FINISHED" | "CANCELED" | "NEED_REFUND" | "REFUNDED"
+type StatusType = 'RESERVED' | 'CONFIRMED' | 'FINISHED' | 'CANCELED' | 'NEED_REFUND' | 'REFUNDED'
 const mapStatus: Record<StatusType, string> = {
     RESERVED: '예약(미결제)',
     CONFIRMED: '결제 완료',

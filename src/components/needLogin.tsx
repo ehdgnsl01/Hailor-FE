@@ -42,13 +42,13 @@ const IconWrapper = styled.div`
 `
 
 const Title = styled.h1`
-    font-size: 2.8rem;
+    font-size: 2rem;
     font-weight: bold;
     margin-bottom: 1rem;
 `
 
 const Description = styled.p`
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     color: #555;
     margin-bottom: 2rem;
     line-height: 1.5;
@@ -67,7 +67,7 @@ const HomeButton = styled.button`
     color: #fff;
     border: none;
     border-radius: 2rem;
-    font-size: 2rem;
+    font-size: 1.5rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
 

@@ -1,10 +1,9 @@
-import React from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 import { DangerIcon } from '../components/icon'
 import Header from '../components/header'
 
-const NotFound: React.FC = () => {
+function NotFound() {
     const navigate = useNavigate()
 
     return (
@@ -14,13 +13,17 @@ const NotFound: React.FC = () => {
                 <IconWrapper>
                     <DangerIcon width="10rem" height="10rem" fill="transparent" />
                 </IconWrapper>
-                <Title>페이지를 찾을 수 없습니다.</Title>
+                <Title>죄송합니다</Title>
                 <Description>
-                    입력하신 페이지 주소가 잘못 입력되었거나,
+                    페이지가 없거나 오류가 발생하였습니다.
                     <br />
-                    변경 혹은 삭제되어 요청하신 페이지를 찾을 수 없습니다.
+                    현재 페이지가 존재하지 않거나
                     <br />
-                    입력하신 페이지 주소를 다시 한번 확인해 주세요.
+                    현재 이용할 수 없는 페이지입니다.
+                    <br />
+                    입력하신 페이지 주소를 다시 한번 확인하거나
+                    <br />
+                    잠시 후 다시 시도해주세요.
                 </Description>
                 <ButtonContainer>
                     <HomeButton onClick={() => navigate('/')}>Hailor 홈</HomeButton>
@@ -55,16 +58,16 @@ const IconWrapper = styled.div`
 `
 
 const Title = styled.h1`
-    font-size: 2.8rem;
+    font-size: 2rem;
     font-weight: bold;
     margin-bottom: 1rem;
 `
 
 const Description = styled.p`
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     color: #555;
     margin-bottom: 2rem;
-    line-height: 1.5;
+    line-height: 2;
 `
 
 const ButtonContainer = styled.div`
@@ -80,7 +83,7 @@ const HomeButton = styled.button`
     color: #fff;
     border: none;
     border-radius: 2rem;
-    font-size: 2rem;
+    font-size: 1.4rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
 
@@ -90,8 +93,15 @@ const HomeButton = styled.button`
 `
 
 const BackButton = styled(HomeButton)`
-    background-color: transparent;
+    padding: 1.5rem 3rem;
+    background-color: #e6e6e6;
     color: rgba(0, 0, 0, 0.6);
+    border: none;
+    border-radius: 2rem;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
     &:hover {
         background-color: #f0f0f0;
     }

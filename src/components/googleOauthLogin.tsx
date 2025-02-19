@@ -96,10 +96,10 @@ const CheckLabel = styled.label`
 `
 
 const Wrapper = styled.div`
+    display: flex;
     width: 90%;
     align-items: center;
     justify-content: center;
-    justify-self: center;
 `
 
 const Status = styled.span<{ need: boolean }>`
@@ -214,8 +214,8 @@ function GoogleOauthLogin() {
     const { setToken } = userStore()
 
     return (
-        <GoogleOAuthProvider clientId={googleClientId}>
-            <Wrapper>
+        <Wrapper>
+            <GoogleOAuthProvider clientId={googleClientId}>
                 <GoogleLogin
                     theme={'outline'}
                     onSuccess={credentialResponse => {
@@ -240,9 +240,9 @@ function GoogleOauthLogin() {
                         console.log('Login Failed')
                     }}
                 />
-            </Wrapper>
-            {showModal && <Register onClick={() => setShowModal(false)} credential={credential} />}
-        </GoogleOAuthProvider>
+                {showModal && <Register onClick={() => setShowModal(false)} credential={credential} />}
+            </GoogleOAuthProvider>
+        </Wrapper>
     )
 }
 

@@ -147,13 +147,13 @@ function DepositModal({ price, onClose, onSuccess }: Props) {
                     <Label>금융기관</Label>
                     <Text>농협</Text>
                 </Rows>
-                <Rows last={false}>
-                    <Label>송금금액</Label>
-                    <Text>{price.toLocaleString()}원</Text>
-                </Rows>
                 <Rows last={true}>
                     <Label>계좌번호</Label>
                     <Text>1234-5678-9010</Text>
+                </Rows>
+                <Rows last={false}>
+                    <Label>송금금액</Label>
+                    <Text>{price.toLocaleString()}원</Text>
                 </Rows>
             </ContentContainer>
             <ButtonContainer>
